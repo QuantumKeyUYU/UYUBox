@@ -43,7 +43,7 @@ def test_wipe_bytes_sodium_branch(monkeypatch):
 
 # --- 3. pq_crypto -----------------------------------------------------------
 
-import zilant_prime_core.utils.pq_crypto as pq
+import uyubox_core.utils.pq_crypto as pq
 
 
 def test_falcon_verify_exception_branch():

@@ -4,4 +4,4 @@ omit =
     */tests/*
     */.pytest_cache/*
     */.ruff_cache/*
-    src/zilant_prime_core/cli.py
+    src/uyubox_core/cli.py

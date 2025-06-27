@@ -11,7 +11,7 @@ from pathlib import Path
 from threading import Thread
 
 from container import get_metadata, get_open_attempts, unpack_file
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_decoy_indistinguishable(tmp_path, monkeypatch):
@@ -37,7 +37,7 @@ def test_decoy_indistinguishable(tmp_path, monkeypatch):
 def test_decoy_wrong_key_and_truncate(tmp_path):
     payload = Path(tmp_path / "d.txt")
     payload.write_text("data")
-    from zilant_prime_core.utils.decoy import generate_decoy_files
+    from uyubox_core.utils.decoy import generate_decoy_files
 
     decoy = generate_decoy_files(tmp_path, 1)[0]
     with pytest.raises(InvalidTag):
@@ -49,7 +49,7 @@ def test_decoy_wrong_key_and_truncate(tmp_path):
 
 
 def test_decoy_parallel_attempts(tmp_path):
-    from zilant_prime_core.utils.decoy import generate_decoy_files
+    from uyubox_core.utils.decoy import generate_decoy_files
 
     decoy = generate_decoy_files(tmp_path, 1)[0]
 

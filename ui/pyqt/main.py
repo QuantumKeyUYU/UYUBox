@@ -5,7 +5,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QProgressBar, QPushButton, QVBoxLayout, QWidget
 
-from zilant_prime_core.utils.screen_guard import ScreenGuardError, guard
+from uyubox_core.utils.screen_guard import ScreenGuardError, guard
 
 
 class MainWindow(QWidget):

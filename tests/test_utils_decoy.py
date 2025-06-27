@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
-from zilant_prime_core.utils import decoy
+from uyubox_core.utils import decoy
 
 
 def test_generate_decoy_file_creates_file(tmp_path):

@@ -5,7 +5,7 @@ import logging
 import os
 from typing import Optional, Union
 
-from zilant_prime_core.utils.secure_logging import SecureLogger, get_secure_logger
+from uyubox_core.utils.secure_logging import SecureLogger, get_secure_logger
 
 __all__ = ["get_logger", "get_file_logger"]
 

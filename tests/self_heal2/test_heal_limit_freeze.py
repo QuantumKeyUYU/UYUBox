@@ -1,8 +1,8 @@
 import hashlib
 
 from container import pack_file
-from zilant_prime_core.crypto.fractal_kdf import fractal_kdf
-from zilant_prime_core.self_heal.heal import SelfHealFrozen, heal_container
+from uyubox_core.crypto.fractal_kdf import fractal_kdf
+from uyubox_core.self_heal.heal import SelfHealFrozen, heal_container
 
 
 def test_heal_limit_freeze(tmp_path):

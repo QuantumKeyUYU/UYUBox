@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Final
 
 from key_lifecycle import recover_secret, shard_secret
-from zilant_prime_core.crypto.kdf import derive_key_dynamic
-from zilant_prime_core.crypto.password_hash import hash_password, verify_password
-from zilant_prime_core.metrics import metrics
+from uyubox_core.crypto.kdf import derive_key_dynamic
+from uyubox_core.crypto.password_hash import hash_password, verify_password
+from uyubox_core.metrics import metrics
 
 __all__: Final = [
     "derive_key_cmd",

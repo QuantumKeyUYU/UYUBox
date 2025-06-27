@@ -4,7 +4,7 @@
 # tests/test_cli_additional.py
 from click.testing import CliRunner
 
-from zilant_prime_core.cli import cli  # :contentReference[oaicite:1]{index=1}
+from uyubox_core.cli import cli  # :contentReference[oaicite:1]{index=1}
 
 runner = CliRunner()
 

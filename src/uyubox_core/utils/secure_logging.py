@@ -1,4 +1,4 @@
-# src/zilant_prime_core/utils/secure_logging.py
+# src/uyubox_core/utils/secure_logging.py
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
@@ -102,7 +102,7 @@ def zeroize() -> None:  # pragma: no cover - integration point
     if _default is not None:
         _default.zeroize()
     try:
-        from zilant_prime_core.notify import Notifier
+        from uyubox_core.notify import Notifier
 
         Notifier().notify("logs zeroized")
     except Exception:

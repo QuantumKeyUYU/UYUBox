@@ -6,10 +6,10 @@ import os
 import pytest
 import types
 
-# Попробуй вариант с учетом src или src/zilant_prime_core
+# Попробуй вариант с учетом src или src/uyubox_core
 # Если не работает — замени на актуальный путь для твоей структуры
 try:
-    tray = importlib.import_module("src.zilant_prime_core.tray")
+    tray = importlib.import_module("src.uyubox_core.tray")
 except ModuleNotFoundError:
     tray = importlib.import_module("src.tray")
 

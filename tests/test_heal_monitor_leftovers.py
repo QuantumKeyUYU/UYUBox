@@ -1,8 +1,8 @@
 import importlib
 from pathlib import Path
 
-heal = importlib.import_module("zilant_prime_core.self_heal.heal")
-mon = importlib.import_module("zilant_prime_core.self_heal.monitor")
+heal = importlib.import_module("uyubox_core.self_heal.heal")
+mon = importlib.import_module("uyubox_core.self_heal.monitor")
 HDR_SEP = heal.HEADER_SEPARATOR
 
 

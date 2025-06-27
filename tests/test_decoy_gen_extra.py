@@ -5,7 +5,7 @@ from __future__ import annotations
 import time
 from pathlib import Path
 
-from zilant_prime_core.decoy_gen import generate_decoy_files, sweep_expired_decoys
+from uyubox_core.decoy_gen import generate_decoy_files, sweep_expired_decoys
 
 
 def test_generate_and_sweep(tmp_path: Path) -> None:

@@ -2,7 +2,7 @@ import pytest
 from cryptography.exceptions import InvalidTag
 
 from aead import PQAEAD
-from zilant_prime_core.utils import pq_crypto
+from uyubox_core.utils import pq_crypto
 
 
 @pytest.mark.skipif(pq_crypto.kyber768 is None, reason="pqclean.kyber768 not installed")

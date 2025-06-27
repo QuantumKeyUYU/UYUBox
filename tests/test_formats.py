@@ -4,7 +4,7 @@
 
 import pytest
 
-from zilant_prime_core.utils.formats import from_b64, from_hex, to_b64, to_hex
+from uyubox_core.utils.formats import from_b64, from_hex, to_b64, to_hex
 
 
 def test_to_hex_valid():

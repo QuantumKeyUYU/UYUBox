@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.crypto.kdf import DEFAULT_SALT_LENGTH, derive_key_dynamic
+from uyubox_core.crypto.kdf import DEFAULT_SALT_LENGTH, derive_key_dynamic
 
 
 def test_derive_key_dynamic_invalid_salt_type():

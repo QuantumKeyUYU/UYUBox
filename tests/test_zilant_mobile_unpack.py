@@ -11,8 +11,8 @@ def test_unpack_mobile_defaults(monkeypatch):
     def fake_unpack_dir(src, dst, key):
         captured["args"] = (src, dst, key)
 
-    # Monkey-patch the unpack_dir function in zilant_prime_core.zilfs
-    monkeypatch.setattr("zilant_prime_core.zilfs.unpack_dir", fake_unpack_dir)
+    # Monkey-patch the unpack_dir function in uyubox_core.zilfs
+    monkeypatch.setattr("uyubox_core.zilfs.unpack_dir", fake_unpack_dir)
 
     # Simulate invocation with only src and dst (no key)
     monkeypatch.setattr(sys, "argv", ["unpack.py", "input.zil", "outdir"])
@@ -31,7 +31,7 @@ def test_unpack_mobile_with_hex_key(monkeypatch):
     def fake_unpack_dir(src, dst, key):
         captured["args"] = (src, dst, key)
 
-    monkeypatch.setattr("zilant_prime_core.zilfs.unpack_dir", fake_unpack_dir)
+    monkeypatch.setattr("uyubox_core.zilfs.unpack_dir", fake_unpack_dir)
 
     # Simulate invocation with src, dst, and a hex key
     monkeypatch.setattr(sys, "argv", ["unpack.py", "in.zil", "outdir", "deadbeef"])

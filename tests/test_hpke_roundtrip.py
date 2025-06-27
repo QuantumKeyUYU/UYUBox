@@ -2,7 +2,7 @@ from click.testing import CliRunner
 from pathlib import Path
 
 import pqcrypto as pq
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 class DummyHybrid:

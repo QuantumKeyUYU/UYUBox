@@ -4,7 +4,7 @@
 import pytest
 from pathlib import Path
 
-from zilant_prime_core.utils.honeyfile import HoneyfileError, check_tmp_for_honeyfiles, create_honeyfile, is_honeyfile
+from uyubox_core.utils.honeyfile import HoneyfileError, check_tmp_for_honeyfiles, create_honeyfile, is_honeyfile
 
 
 def test_create_and_detect_honeyfile(tmp_path):

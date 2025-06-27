@@ -5,7 +5,7 @@
 
 import builtins  # Add this import
 
-from zilant_prime_core.crypto.kdf import DEFAULT_KEY_LENGTH, DEFAULT_SALT_LENGTH, derive_key, generate_salt
+from uyubox_core.crypto.kdf import DEFAULT_KEY_LENGTH, DEFAULT_SALT_LENGTH, derive_key, generate_salt
 
 
 def debug_print(*args, **kwargs):

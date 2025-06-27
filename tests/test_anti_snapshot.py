@@ -5,12 +5,12 @@ import pytest
 import time
 from pathlib import Path
 
-from zilant_prime_core.utils.anti_snapshot import TIMESTAMP_FILE, detect_snapshot, read_timestamp, write_timestamp
+from uyubox_core.utils.anti_snapshot import TIMESTAMP_FILE, detect_snapshot, read_timestamp, write_timestamp
 
 
 @pytest.fixture(autouse=True)
 def clean_timestamp(tmp_path: Path, monkeypatch):
-    monkeypatch.setattr("zilant_prime_core.utils.anti_snapshot.TIMESTAMP_FILE", tmp_path / "ts.txt")
+    monkeypatch.setattr("uyubox_core.utils.anti_snapshot.TIMESTAMP_FILE", tmp_path / "ts.txt")
     yield
 
 

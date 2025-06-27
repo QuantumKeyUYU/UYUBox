@@ -2,7 +2,7 @@ import os
 import types
 
 os.environ.setdefault("ZILANT_ALLOW_ROOT", "1")
-import zilant_prime_core.utils.pq_crypto as pq
+import uyubox_core.utils.pq_crypto as pq
 
 
 def test_hybridkem_basic(monkeypatch):

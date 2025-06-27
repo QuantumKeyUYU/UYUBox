@@ -5,9 +5,9 @@ import pytest
 import tempfile
 import types
 
-from zilant_prime_core.utils import hash_challenge, honeyfile
-from zilant_prime_core.utils import root_guard as rg
-from zilant_prime_core.utils import screen_guard
+from uyubox_core.utils import hash_challenge, honeyfile
+from uyubox_core.utils import root_guard as rg
+from uyubox_core.utils import screen_guard
 
 
 def test_honeyfile_detection():

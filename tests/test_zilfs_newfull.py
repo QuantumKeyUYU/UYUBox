@@ -7,7 +7,7 @@ from pathlib import Path
 
 # Импортируем модуль по актуальной структуре
 try:
-    zilfs = importlib.import_module("src.zilant_prime_core.zilfs")
+    zilfs = importlib.import_module("src.uyubox_core.zilfs")
 except ModuleNotFoundError:
     zilfs = importlib.import_module("src.zilfs")
 

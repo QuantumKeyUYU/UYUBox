@@ -3,7 +3,7 @@
 
 import os
 
-import zilant_prime_core.utils.self_watchdog as wd
+import uyubox_core.utils.self_watchdog as wd
 
 
 class DummyLockNoArgs:

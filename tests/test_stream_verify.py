@@ -3,7 +3,7 @@ from click.testing import CliRunner
 from pathlib import Path
 
 from streaming_aead import pack_stream
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_stream_verify(tmp_path: Path) -> None:

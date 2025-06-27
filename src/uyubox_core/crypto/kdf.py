@@ -15,8 +15,8 @@ import argon2.low_level as a2
 import os
 from typing import cast
 
-from zilant_prime_core.crypto.g_new import G_new
-from zilant_prime_core.utils.constants import DEFAULT_KEY_LENGTH, DEFAULT_SALT_LENGTH
+from uyubox_core.crypto.g_new import G_new
+from uyubox_core.utils.constants import DEFAULT_KEY_LENGTH, DEFAULT_SALT_LENGTH
 
 DEFAULT_MEMORY_MIN = 2**15  # 32 MiB
 DEFAULT_MEMORY_MAX = 2**17  # 128 MiB

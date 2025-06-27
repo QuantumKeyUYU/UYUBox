@@ -7,7 +7,7 @@ import secrets
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from pathlib import Path
 
-from zilant_prime_core.utils.secure_logging import SecureLogger
+from uyubox_core.utils.secure_logging import SecureLogger
 
 
 def test_secure_logger_zeroize(tmp_path):
@@ -32,7 +32,7 @@ def test_secure_logger_zeroize(tmp_path):
 
 
 def test_zeroize_missing(tmp_path):
-    from zilant_prime_core.utils.secure_logging import SecureLogger
+    from uyubox_core.utils.secure_logging import SecureLogger
 
     slog = SecureLogger(key=b"0" * 32, log_path=str(tmp_path / "log"))
     # no file yet

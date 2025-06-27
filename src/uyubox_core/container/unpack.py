@@ -8,20 +8,20 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from zilant_prime_core.container.metadata import (
+from uyubox_core.container.metadata import (
     MetadataError,
     deserialize_metadata,
     new_meta_for_file,
     serialize_metadata,
 )
-from zilant_prime_core.crypto.aead import (
+from uyubox_core.crypto.aead import (
     DEFAULT_NONCE_LENGTH,
     AEADInvalidTagError,
     decrypt_aead,
     encrypt_aead,
     generate_nonce,
 )
-from zilant_prime_core.crypto.kdf import DEFAULT_SALT_LENGTH, derive_key
+from uyubox_core.crypto.kdf import DEFAULT_SALT_LENGTH, derive_key
 
 __all__ = [
     "PackError",

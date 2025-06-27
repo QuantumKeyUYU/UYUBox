@@ -1,7 +1,7 @@
 import pytest
 import time
 
-from zilant_prime_core.utils.pq_crypto import Kyber768KEM
+from uyubox_core.utils.pq_crypto import Kyber768KEM
 
 
 @pytest.mark.perf

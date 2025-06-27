@@ -1,6 +1,6 @@
 import time
 
-from zilant_prime_core.utils.hash_challenge import generate_daily_challenge
+from uyubox_core.utils.hash_challenge import generate_daily_challenge
 
 
 def test_generate_daily_challenge(tmp_path, monkeypatch):

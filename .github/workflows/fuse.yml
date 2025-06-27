@@ -3,7 +3,7 @@ name: fuse
 on:
   pull_request:
     paths:
-      - 'src/zilant_prime_core/zilfs.py'
+      - 'src/uyubox_core/zilfs.py'
       - 'tests/test_zilfs*'
       - '.github/workflows/fuse.yml'
 
@@ -60,7 +60,7 @@ jobs:
       - name: Install deps
         run: pip install -e .[zilfs]
       - name: Smoke import
-        run: python -c "import zilant_prime_core.zilfs"
+        run: python -c "import uyubox_core.zilfs"
       - name: Remote mount copy
         continue-on-error: true
         run: |

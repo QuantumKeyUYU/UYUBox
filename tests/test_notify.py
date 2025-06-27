@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
-from zilant_prime_core.notify import Notifier
+from uyubox_core.notify import Notifier
 
 
 class Dummy:

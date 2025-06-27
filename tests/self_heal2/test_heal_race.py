@@ -2,7 +2,7 @@ import hashlib
 import threading
 
 from container import pack_file
-from zilant_prime_core.self_heal.heal import heal_container
+from uyubox_core.self_heal.heal import heal_container
 
 
 def test_heal_race(tmp_path):

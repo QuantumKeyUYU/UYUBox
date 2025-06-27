@@ -4,7 +4,7 @@
 import pytest
 from types import SimpleNamespace
 
-import zilant_prime_core.utils.pq_crypto as pq
+import uyubox_core.utils.pq_crypto as pq
 
 
 @pytest.mark.skipif(pq.kyber768 is None, reason="pqclean.kyber768 not installed")

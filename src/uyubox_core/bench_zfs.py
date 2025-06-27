@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from zilant_prime_core.zilfs import ZilantFS
+from uyubox_core.zilfs import ZilantFS
 
 
 def bench_fs() -> float:

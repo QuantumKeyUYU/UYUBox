@@ -4,7 +4,7 @@
 import os
 import pytest
 
-import zilant_prime_core.utils.self_watchdog as wd
+import uyubox_core.utils.self_watchdog as wd
 
 
 class ThreadNoStart:

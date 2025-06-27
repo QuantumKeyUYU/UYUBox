@@ -38,7 +38,7 @@ def collect_edges() -> list[tuple[str, str]]:
 def write_dot(edges: list[tuple[str, str]]) -> None:
     lines = ["digraph imports {"]
     for src, dst in edges:
-        if dst.startswith("zilant_prime_core"):
+        if dst.startswith("uyubox_core"):
             lines.append(f'  "{src}" -> "{dst}";')
     lines.append("}")
     DOT_FILE.write_text("\n".join(lines) + "\n")

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core Contributors
 
-from zilant_prime_core.utils.device_fp import SALT_CONST, _read_file_first_line
+from uyubox_core.utils.device_fp import SALT_CONST, _read_file_first_line
 
 
 def test_salt_length():

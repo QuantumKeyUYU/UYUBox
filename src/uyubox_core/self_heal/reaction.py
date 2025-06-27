@@ -6,7 +6,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from zilant_prime_core.crypto.fractal_kdf import fractal_kdf
+from uyubox_core.crypto.fractal_kdf import fractal_kdf
 
 AUDIO_LOG = Path("self_heal.log")
 

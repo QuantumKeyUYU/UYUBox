@@ -141,7 +141,7 @@ def unpack_file(
             kem_ct = payload[:kem_len]
             nonce = payload[kem_len : kem_len + PQAEAD._NONCE_LEN]
             ct = payload[kem_len + PQAEAD._NONCE_LEN :]
-            from zilant_prime_core.utils.pq_crypto import Kyber768KEM, derive_key_pq
+            from uyubox_core.utils.pq_crypto import Kyber768KEM, derive_key_pq
 
             kem = Kyber768KEM()
             shared = kem.decapsulate(pq_private_key, kem_ct)
@@ -162,7 +162,7 @@ def unpack_file(
     except ValueError:
         try:
             from audit_ledger import record_action
-            from zilant_prime_core.notify import Notifier
+            from uyubox_core.notify import Notifier
 
             record_action("tamper_detected", {"file": str(input_path)})
             Notifier().notify(f"Tamper detected in {input_path.name}")

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
-from zilant_prime_core.self_heal import monitor
+from uyubox_core.self_heal import monitor
 
 
 def test_handler_on_modified_wrong_path(tmp_path):

@@ -4,17 +4,17 @@ import pytest
 import sys
 from pathlib import Path
 
-zl = importlib.import_module("zilant_prime_core.zilfs")
+zl = importlib.import_module("uyubox_core.zilfs")
 ZilantFS = zl.ZilantFS
 
 
 def test_import_without_fuse(monkeypatch):
     """Стр. 33-37: перезагрузка без fuse."""
-    sys.modules.pop("zilant_prime_core.zilfs", None)
+    sys.modules.pop("uyubox_core.zilfs", None)
     monkeypatch.setitem(sys.modules, "fuse", None)
     import importlib as _imp
 
-    _imp.reload(importlib.import_module("zilant_prime_core.zilfs"))
+    _imp.reload(importlib.import_module("uyubox_core.zilfs"))
 
 
 def test_mark_sparse_noop(tmp_path: Path):

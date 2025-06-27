@@ -36,10 +36,10 @@ def _zeroize() -> None:
     guarantee the process terminates.
     """
     try:
-        from zilant_prime_core.utils.secure_logging import zeroize as log_zeroize
+        from uyubox_core.utils.secure_logging import zeroize as log_zeroize
 
         log_zeroize()
-        from zilant_prime_core.notify import Notifier
+        from uyubox_core.notify import Notifier
 
         Notifier().notify("watchdog triggered")
     except Exception:

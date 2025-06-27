@@ -7,7 +7,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from zilant_prime_core.crypto.signature import SignatureError, generate_keypair, sign, verify
+from uyubox_core.crypto.signature import SignatureError, generate_keypair, sign, verify
 
 
 @given(msg=st.binary(min_size=0, max_size=1024))

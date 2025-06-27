@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 
-from zilant_prime_core.crypto.signature import KEY_SIZE, generate_keypair, sign, verify
+from uyubox_core.crypto.signature import KEY_SIZE, generate_keypair, sign, verify
 
 
 def test_generate_keypair_returns_valid_keys():

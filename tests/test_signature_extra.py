@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.crypto.signature import KEY_SIZE, SIG_SIZE, SignatureError, sign, verify
+from uyubox_core.crypto.signature import KEY_SIZE, SIG_SIZE, SignatureError, sign, verify
 
 
 def test_sign_invalid_priv_type():

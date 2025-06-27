@@ -5,7 +5,7 @@ import pytest
 
 import src.aead
 import src.container as container
-import zilant_prime_core.utils.pq_crypto as pqcrypto
+import uyubox_core.utils.pq_crypto as pqcrypto
 
 
 def test_unpack_blob_invalid_separator():

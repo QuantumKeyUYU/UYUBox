@@ -1,21 +1,21 @@
 import pytest
 from pathlib import Path
 
-from zilant_prime_core.utils.recovery import DECOY_FILE, DESTRUCTION_KEY_BUFFER, LOG_ENC_FILE, LOG_FILE, self_destruct
+from uyubox_core.utils.recovery import DECOY_FILE, DESTRUCTION_KEY_BUFFER, LOG_ENC_FILE, LOG_FILE, self_destruct
 
 
 @pytest.fixture(autouse=True)
 def setup_paths(tmp_path: Path, monkeypatch):
-    monkeypatch.setattr("zilant_prime_core.utils.recovery.LOG_FILE", tmp_path / "log.json")
-    monkeypatch.setattr("zilant_prime_core.utils.recovery.LOG_ENC_FILE", tmp_path / "log.enc")
+    monkeypatch.setattr("uyubox_core.utils.recovery.LOG_FILE", tmp_path / "log.json")
+    monkeypatch.setattr("uyubox_core.utils.recovery.LOG_ENC_FILE", tmp_path / "log.enc")
     globals()["LOG_FILE"] = tmp_path / "log.json"
     globals()["LOG_ENC_FILE"] = tmp_path / "log.enc"
     fake_decoy = tmp_path / "decoy.bin"
     fake_decoy.write_bytes(b"DEC OY DATA")
-    monkeypatch.setattr("zilant_prime_core.utils.recovery.DECOY_FILE", fake_decoy)
+    monkeypatch.setattr("uyubox_core.utils.recovery.DECOY_FILE", fake_decoy)
     globals()["DECOY_FILE"] = fake_decoy
     monkeypatch.setattr(
-        "zilant_prime_core.utils.recovery.DESTRUCTION_KEY_BUFFER",
+        "uyubox_core.utils.recovery.DESTRUCTION_KEY_BUFFER",
         bytearray(b"\x01" * 32),
     )
     yield

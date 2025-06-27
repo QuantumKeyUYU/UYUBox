@@ -14,11 +14,11 @@ from typing import Any, NoReturn, cast
 
 from container import pack_file, unpack_file
 from crypto_core import hash_sha3
-from zilant_prime_core.crypto.password_hash import hash_password, verify_password
-from zilant_prime_core.metrics import metrics
-from zilant_prime_core.utils import VaultClient
-from zilant_prime_core.utils.anti_snapshot import detect_snapshot
-from zilant_prime_core.utils.counter import increment_counter, read_counter
+from uyubox_core.crypto.password_hash import hash_password, verify_password
+from uyubox_core.metrics import metrics
+from uyubox_core.utils import VaultClient
+from uyubox_core.utils.anti_snapshot import detect_snapshot
+from uyubox_core.utils.counter import increment_counter, read_counter
 
 
 def add_complete_flag() -> None:
@@ -49,11 +49,11 @@ def add_complete_flag() -> None:
     )
 
 
-from zilant_prime_core.utils.device_fp import SALT_CONST, collect_hw_factors, compute_fp
-from zilant_prime_core.utils.pq_crypto import Dilithium2Signature, Kyber768KEM
-from zilant_prime_core.utils.recovery import DESTRUCTION_KEY_BUFFER, self_destruct
-from zilant_prime_core.utils.screen_guard import ScreenGuardError, guard
-from zilant_prime_core.zilfs import diff_snapshots, mount_fs, snapshot_container, umount_fs
+from uyubox_core.utils.device_fp import SALT_CONST, collect_hw_factors, compute_fp
+from uyubox_core.utils.pq_crypto import Dilithium2Signature, Kyber768KEM
+from uyubox_core.utils.recovery import DESTRUCTION_KEY_BUFFER, self_destruct
+from uyubox_core.utils.screen_guard import ScreenGuardError, guard
+from uyubox_core.zilfs import diff_snapshots, mount_fs, snapshot_container, umount_fs
 
 
 # ────────────────────────── helpers ──────────────────────────
@@ -146,11 +146,11 @@ def cli(
         raise SystemExit(90)
 
     if metrics_port:
-        from zilant_prime_core.health import start_server
+        from uyubox_core.health import start_server
 
         start_server(metrics_port)
 
-    from zilant_prime_core.utils.decoy import sweep_expired_decoys
+    from uyubox_core.utils.decoy import sweep_expired_decoys
 
     removed = sweep_expired_decoys(Path.cwd())
     if paranoid and removed:
@@ -213,7 +213,7 @@ def cmd_pack(  # noqa: C901  (covered by extensive tests)
     decoy_expire: int,
     overwrite: bool,
 ) -> None:
-    from zilant_prime_core.metrics import metrics
+    from uyubox_core.metrics import metrics
 
     dest = output or source.with_suffix(".zil")
     if dest.exists() and not overwrite:
@@ -277,7 +277,7 @@ def cmd_pack(  # noqa: C901  (covered by extensive tests)
     _emit(ctx, {"path": str(dest)})
     if decoy > 0:
         from audit_ledger import record_action
-        from zilant_prime_core.utils.decoy import generate_decoy_files
+        from uyubox_core.utils.decoy import generate_decoy_files
 
         files = generate_decoy_files(dest.parent, decoy, expire_seconds=decoy_expire or None)
         record_action("decoy_created", {"count": decoy, "files": [f.name for f in files]})
@@ -308,7 +308,7 @@ def cmd_unpack(
     honeypot_test: bool,
     decoy_expire: int,
 ) -> None:
-    from zilant_prime_core.metrics import metrics
+    from uyubox_core.metrics import metrics
 
     pwd = _ask_pwd() if password == "-" else password or _abort("Missing password")
     out_dir = dest or container.parent
@@ -332,7 +332,7 @@ def cmd_unpack(
     except Exception as exc:
         if honeypot_test:
             from audit_ledger import record_decoy_event
-            from zilant_prime_core.utils.decoy import generate_decoy_files
+            from uyubox_core.utils.decoy import generate_decoy_files
 
             decoy_file = generate_decoy_files(out_dir, 1, expire_seconds=decoy_expire or None)[0]
             record_decoy_event({"honeypot": str(decoy_file)})
@@ -474,7 +474,7 @@ def cmd_umount_cli(mountpoint: Path) -> None:
 def cmd_bench(bench_fs: bool) -> None:
     """Run benchmarks."""
     if bench_fs:
-        from zilant_prime_core.bench_zfs import bench_fs as run
+        from uyubox_core.bench_zfs import bench_fs as run
 
         mb_s = run()
         click.echo(f"{mb_s:.2f} MB/s")
@@ -504,7 +504,7 @@ def cmd_diff(snap_a: Path, snap_b: Path, password: str) -> None:
 @cli.command("tray")
 def cmd_tray() -> None:
     """Launch system tray helper."""
-    from zilant_prime_core.tray import run_tray
+    from uyubox_core.tray import run_tray
 
     run_tray()
 
@@ -651,7 +651,7 @@ def cmd_heal_scan(path: Path, auto: bool, recursive: bool, report: str) -> None:
     from tabulate import tabulate  # type: ignore
 
     from container import get_metadata, verify_integrity
-    from zilant_prime_core.self_heal import heal_container
+    from uyubox_core.self_heal import heal_container
 
     paths: list[Path] = []
     if path.is_dir():
@@ -690,7 +690,7 @@ def cmd_heal_scan(path: Path, auto: bool, recursive: bool, report: str) -> None:
 @click.argument("container", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 def cmd_heal_verify(container: Path) -> None:
     from container import get_metadata
-    from zilant_prime_core.zkp import verify_intact
+    from uyubox_core.zkp import verify_intact
 
     meta = get_metadata(container)
     history = meta.get("heal_history", [])
@@ -724,7 +724,7 @@ def install_completion(ctx: click.Context, shell: str) -> None:
 
 
 # ───────── external sub‑commands (kdf, pw‑hash, …) ─────────
-from zilant_prime_core.cli_commands import (
+from uyubox_core.cli_commands import (
     derive_key_cmd,
     hpke_cmd,
     pq_genkeypair_cmd,

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
-from zilant_prime_core.utils import hash_challenge as hc
+from uyubox_core.utils import hash_challenge as hc
 
 
 def test_hash_challenge_caches_result(tmp_path):

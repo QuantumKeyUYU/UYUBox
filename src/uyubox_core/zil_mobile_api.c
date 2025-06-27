@@ -6,7 +6,7 @@ int zil_unpack_dir(const char *in, const char *out, const uint8_t *key32) {
     if (!Py_IsInitialized()) {
         Py_Initialize();
     }
-    PyObject *module = PyImport_ImportModule("zilant_prime_core.zilfs");
+    PyObject *module = PyImport_ImportModule("uyubox_core.zilfs");
     if (!module) return -1;
     PyObject *func = PyObject_GetAttrString(module, "unpack_dir");
     if (!func) {

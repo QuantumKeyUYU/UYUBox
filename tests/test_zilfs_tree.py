@@ -3,7 +3,7 @@ import importlib
 import shutil
 from pathlib import Path
 
-zl = importlib.import_module("zilant_prime_core.zilfs")
+zl = importlib.import_module("uyubox_core.zilfs")
 ZilantFS = zl.ZilantFS
 
 

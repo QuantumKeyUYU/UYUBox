@@ -1,6 +1,6 @@
 import pytest
 
-from zilant_prime_core.counter import DistributedCounter, SecurityError
+from uyubox_core.counter import DistributedCounter, SecurityError
 
 
 def test_increment_and_verify(tmp_path):

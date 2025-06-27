@@ -1,6 +1,6 @@
 import pytest
 
-from zilant_prime_core.utils import root_guard
+from uyubox_core.utils import root_guard
 
 
 def test_is_device_rooted_when_checks_true(monkeypatch):

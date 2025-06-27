@@ -3,7 +3,7 @@ import yaml
 from click import Command, Context
 from click.testing import CliRunner
 
-import zilant_prime_core.cli_commands as cc
+import uyubox_core.cli_commands as cc
 
 
 def _make_ctx(obj=None):

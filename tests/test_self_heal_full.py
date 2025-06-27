@@ -6,8 +6,8 @@ import json
 import pytest
 from pathlib import Path
 
-import zilant_prime_core.self_heal.heal as heal_mod
-from zilant_prime_core.self_heal.heal import HEADER_SEPARATOR, SelfHealFrozen, heal_container
+import uyubox_core.self_heal.heal as heal_mod
+from uyubox_core.self_heal.heal import HEADER_SEPARATOR, SelfHealFrozen, heal_container
 
 
 def make_file(tmp: Path, header: bytes) -> Path:

@@ -5,7 +5,7 @@ import base64
 import json
 import pytest
 
-from zilant_prime_core.counter import DistributedCounter, SecurityError
+from uyubox_core.counter import DistributedCounter, SecurityError
 
 
 def test_increment_persist_and_reload(tmp_path):

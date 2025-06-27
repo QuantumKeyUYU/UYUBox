@@ -5,7 +5,7 @@
 
 from pathlib import Path
 
-import zilant_prime_core.cli as cli_mod
+import uyubox_core.cli as cli_mod
 
 
 def test_cleanup_removes_existing(tmp_path):

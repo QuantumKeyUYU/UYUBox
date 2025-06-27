@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core Contributors
-import zilant_prime_core.watchdog as wd
+import uyubox_core.watchdog as wd
 
 
 def test_watchdog_detects_change(tmp_path):

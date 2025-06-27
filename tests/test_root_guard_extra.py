@@ -3,7 +3,7 @@
 
 import builtins
 
-import zilant_prime_core.utils.root_guard as rg
+import uyubox_core.utils.root_guard as rg
 
 original_open = builtins.open
 

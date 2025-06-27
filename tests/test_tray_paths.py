@@ -10,7 +10,7 @@ for sub in ("QtCore", "QtGui", "QtWidgets"):
     setattr(pyside, sub, types.ModuleType(sub))
 sys.modules["PySide6"] = pyside
 
-tray_mod = importlib.reload(importlib.import_module("zilant_prime_core.tray"))
+tray_mod = importlib.reload(importlib.import_module("uyubox_core.tray"))
 
 
 def test_tray_refresh_and_lock_all(monkeypatch):

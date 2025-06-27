@@ -3,8 +3,8 @@
 
 import pytest
 
-import zilant_prime_core.self_heal.monitor as mon_mod
-from zilant_prime_core.self_heal.monitor import _Handler
+import uyubox_core.self_heal.monitor as mon_mod
+from uyubox_core.self_heal.monitor import _Handler
 
 
 @pytest.fixture(autouse=True)
@@ -70,7 +70,7 @@ def test_maybe_self_destruct_removes_file_when_flag_set(monkeypatch, tmp_path):
     file.write_text("x")
     monkeypatch.setenv("ZILANT_SELF_DESTRUCT", "1")
     # direct call to reaction helper
-    import zilant_prime_core.self_heal.monitor as m
+    import uyubox_core.self_heal.monitor as m
 
     m.maybe_self_destruct(file)
     assert not file.exists()

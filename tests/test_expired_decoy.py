@@ -1,6 +1,6 @@
 import time
 
-from zilant_prime_core.utils.decoy import _DECOY_EXPIRY, generate_decoy_files, sweep_expired_decoys
+from uyubox_core.utils.decoy import _DECOY_EXPIRY, generate_decoy_files, sweep_expired_decoys
 
 
 def test_sweep_expired_decoys_direct(tmp_path):

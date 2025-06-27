@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 from utils.file_utils import atomic_write
-from zilant_prime_core.utils.counter import read_counter
+from uyubox_core.utils.counter import read_counter
 
 TIMESTAMP_FILE = Path.home() / ".zilant_timestamp"
 SUSPICION_THRESHOLD = 300

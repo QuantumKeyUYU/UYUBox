@@ -1,4 +1,4 @@
-from zilant_prime_core.utils import device_fp
+from uyubox_core.utils import device_fp
 
 
 def test_read_file_first_line(tmp_path):

@@ -13,9 +13,9 @@ import json
 import os
 from pathlib import Path
 
-from zilant_prime_core.crypto.aead import encrypt_aead
-from zilant_prime_core.crypto.kdf import derive_key
-from zilant_prime_core.utils.constants import DEFAULT_NONCE_LENGTH, DEFAULT_SALT_LENGTH
+from uyubox_core.crypto.aead import encrypt_aead
+from uyubox_core.crypto.kdf import derive_key
+from uyubox_core.utils.constants import DEFAULT_NONCE_LENGTH, DEFAULT_SALT_LENGTH
 
 
 class PackError(Exception):

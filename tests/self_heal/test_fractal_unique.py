@@ -1,4 +1,4 @@
-from zilant_prime_core.crypto.fractal_kdf import fractal_kdf
+from uyubox_core.crypto.fractal_kdf import fractal_kdf
 
 
 def test_fractal_unique_and_deterministic(tmp_path):

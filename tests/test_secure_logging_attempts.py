@@ -4,7 +4,7 @@
 import base64
 import secrets
 
-from zilant_prime_core.utils.secure_logging import SecureLogger, get_decryption_attempts
+from uyubox_core.utils.secure_logging import SecureLogger, get_decryption_attempts
 
 
 def test_decryption_attempt_counter(tmp_path, monkeypatch):

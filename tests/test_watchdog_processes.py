@@ -4,7 +4,7 @@
 import pytest
 import types
 
-import zilant_prime_core.watchdog as wd
+import uyubox_core.watchdog as wd
 
 
 def test_watchdog_start_stop(monkeypatch, tmp_path):

@@ -1,4 +1,4 @@
-# src/zilant_prime_core/utils/formats.py
+# src/uyubox_core/utils/formats.py
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 # SPDX-License-Identifier: MIT
 

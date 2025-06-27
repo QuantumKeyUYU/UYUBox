@@ -4,7 +4,7 @@
 import pytest
 import sys
 
-from zilant_prime_core.self_heal import monitor
+from uyubox_core.self_heal import monitor
 
 
 def test_monitor_container_importerror(monkeypatch):
@@ -12,7 +12,7 @@ def test_monitor_container_importerror(monkeypatch):
     monkeypatch.setitem(sys.modules, "watchdog.events", None)
     import importlib
 
-    import zilant_prime_core.self_heal.monitor as mon
+    import uyubox_core.self_heal.monitor as mon
 
     importlib.reload(mon)
     with pytest.raises(ImportError):
@@ -22,16 +22,16 @@ def test_monitor_container_importerror(monkeypatch):
 def test_handler_on_modified(monkeypatch, tmp_path):
     called = {}
     monkeypatch.setattr(
-        "zilant_prime_core.self_heal.monitor.rotate_key", lambda key: called.setdefault("rotate_key", True)
+        "uyubox_core.self_heal.monitor.rotate_key", lambda key: called.setdefault("rotate_key", True)
     )
     monkeypatch.setattr(
-        "zilant_prime_core.self_heal.monitor.record_event", lambda event: called.setdefault("record_event", True)
+        "uyubox_core.self_heal.monitor.record_event", lambda event: called.setdefault("record_event", True)
     )
     monkeypatch.setattr(
-        "zilant_prime_core.self_heal.monitor.prove_intact", lambda digest: called.setdefault("prove_intact", True)
+        "uyubox_core.self_heal.monitor.prove_intact", lambda digest: called.setdefault("prove_intact", True)
     )
     monkeypatch.setattr(
-        "zilant_prime_core.self_heal.monitor.maybe_self_destruct",
+        "uyubox_core.self_heal.monitor.maybe_self_destruct",
         lambda path: called.setdefault("maybe_self_destruct", True),
     )
     handler = monitor._Handler(tmp_path / "file.txt")

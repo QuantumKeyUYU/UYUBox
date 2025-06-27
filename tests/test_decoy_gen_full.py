@@ -5,7 +5,7 @@ import tempfile
 import time
 from pathlib import Path
 
-import zilant_prime_core.decoy_gen as decoy_gen
+import uyubox_core.decoy_gen as decoy_gen
 
 
 def test_generate_decoy_file_creates_and_expires():

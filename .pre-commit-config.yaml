@@ -48,7 +48,7 @@ repos:
         name: mypy (type check)
         additional_dependencies: ["types-requests", "types-PyYAML", "types-tabulate"]
         language_version: python3
-        files: ^src/zilant_prime_core/(?!scripts/).*\.py$
+        files: ^src/uyubox_core/(?!scripts/).*\.py$
 
   - repo: local
     hooks:

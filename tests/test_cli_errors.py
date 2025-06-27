@@ -4,8 +4,8 @@
 
 from click.testing import CliRunner
 
-import zilant_prime_core.cli as cli_mod
-from zilant_prime_core.container.metadata import MetadataError
+import uyubox_core.cli as cli_mod
+from uyubox_core.container.metadata import MetadataError
 
 runner = CliRunner()
 

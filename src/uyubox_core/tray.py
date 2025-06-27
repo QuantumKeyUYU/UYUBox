@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
 """
-src/zilant_prime_core/tray.py
+src/uyubox_core/tray.py
 Мини-трей-модуль, работающий как с PySide6, так и без него.
 
 ▪ В обычном окружении пытаемся импортировать необходимые Qt-классы.

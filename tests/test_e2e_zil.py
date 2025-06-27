@@ -4,11 +4,11 @@
 import os
 import struct
 
-from zilant_prime_core.container.metadata import deserialize_metadata
-from zilant_prime_core.crypto.aead import decrypt_aead
-from zilant_prime_core.crypto.kdf import DEFAULT_KEY_LENGTH, derive_key
-from zilant_prime_core.utils.constants import MAGIC, VERSION
-from zilant_prime_core.vdf.vdf import VDFVerificationError, verify_posw_sha256
+from uyubox_core.container.metadata import deserialize_metadata
+from uyubox_core.crypto.aead import decrypt_aead
+from uyubox_core.crypto.kdf import DEFAULT_KEY_LENGTH, derive_key
+from uyubox_core.utils.constants import MAGIC, VERSION
+from uyubox_core.vdf.vdf import VDFVerificationError, verify_posw_sha256
 
 
 class ContainerError(Exception):

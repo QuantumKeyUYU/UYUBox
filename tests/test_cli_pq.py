@@ -1,8 +1,8 @@
 import pytest
 from click.testing import CliRunner
 
-from zilant_prime_core.cli import cli
-from zilant_prime_core.utils import pq_crypto
+from uyubox_core.cli import cli
+from uyubox_core.utils import pq_crypto
 
 
 @pytest.mark.skipif(pq_crypto.kyber768 is None, reason="pqclean.kyber768 not installed")

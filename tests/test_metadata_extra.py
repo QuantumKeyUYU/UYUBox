@@ -6,14 +6,14 @@
 import json
 import pytest
 
-from zilant_prime_core.container.metadata import (
+from uyubox_core.container.metadata import (
     Metadata,
     MetadataError,
     deserialize_metadata,
     new_meta_for_file,
     serialize_metadata,
 )
-from zilant_prime_core.utils.formats import from_b64
+from uyubox_core.utils.formats import from_b64
 
 
 def test_new_meta_for_file(tmp_path):

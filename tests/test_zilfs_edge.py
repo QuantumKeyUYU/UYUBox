@@ -2,17 +2,17 @@ import importlib
 import pytest
 import sys
 
-zl = importlib.import_module("zilant_prime_core.zilfs")
+zl = importlib.import_module("uyubox_core.zilfs")
 
 
 def test_zero_import_block(monkeypatch):
     # Повторная перезагрузка без fuse -> строки 33-37
-    if "zilant_prime_core.zilfs" in sys.modules:
-        del sys.modules["zilant_prime_core.zilfs"]
+    if "uyubox_core.zilfs" in sys.modules:
+        del sys.modules["uyubox_core.zilfs"]
     monkeypatch.setitem(sys.modules, "fuse", None)
     import importlib as _imp
 
-    _imp.reload(importlib.import_module("zilant_prime_core.zilfs"))
+    _imp.reload(importlib.import_module("uyubox_core.zilfs"))
 
 
 def test_mark_sparse_full(monkeypatch, tmp_path):

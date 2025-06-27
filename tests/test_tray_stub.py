@@ -6,7 +6,7 @@ import importlib
 
 def get_tray_module():
     try:
-        return importlib.import_module("src.zilant_prime_core.tray")
+        return importlib.import_module("src.uyubox_core.tray")
     except ModuleNotFoundError:
         return importlib.import_module("src.tray")
 

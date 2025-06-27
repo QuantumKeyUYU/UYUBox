@@ -3,7 +3,7 @@
 
 import logging
 
-import zilant_prime_core.utils.logging as zl
+import uyubox_core.utils.logging as zl
 
 
 def test_get_logger_basic(monkeypatch):

@@ -4,7 +4,7 @@
 import os
 import pytest
 
-from zilant_prime_core import zilfs
+from uyubox_core import zilfs
 
 
 def test_pack_dir_missing_source(tmp_path):

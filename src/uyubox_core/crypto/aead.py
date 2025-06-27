@@ -16,7 +16,7 @@ from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from typing import cast
 
-from zilant_prime_core.utils.constants import DEFAULT_KEY_LENGTH, DEFAULT_NONCE_LENGTH
+from uyubox_core.utils.constants import DEFAULT_KEY_LENGTH, DEFAULT_NONCE_LENGTH
 
 DEFAULT_KEY_LENGTH = DEFAULT_KEY_LENGTH
 DEFAULT_NONCE_LENGTH = DEFAULT_NONCE_LENGTH

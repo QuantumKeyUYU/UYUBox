@@ -6,13 +6,13 @@ import pytest
 
 # Загружаем сам модуль unpack, чтобы патчить его переменные
 unpack_mod = importlib.import_module(
-    "zilant_prime_core.container.unpack"
+    "uyubox_core.container.unpack"
 )  # модуль с decrypt_aead :contentReference[oaicite:0]{index=0}
-from zilant_prime_core.container.metadata import serialize_metadata
-from zilant_prime_core.container.pack import pack
-from zilant_prime_core.container.unpack import UnpackError, unpack
-from zilant_prime_core.crypto.aead import DEFAULT_NONCE_LENGTH
-from zilant_prime_core.crypto.kdf import DEFAULT_SALT_LENGTH
+from uyubox_core.container.metadata import serialize_metadata
+from uyubox_core.container.pack import pack
+from uyubox_core.container.unpack import UnpackError, unpack
+from uyubox_core.crypto.aead import DEFAULT_NONCE_LENGTH
+from uyubox_core.crypto.kdf import DEFAULT_SALT_LENGTH
 
 
 @pytest.fixture

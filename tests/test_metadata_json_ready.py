@@ -4,7 +4,7 @@
 import json
 import pytest
 
-from zilant_prime_core.container.metadata import MetadataError, deserialize_metadata, serialize_metadata
+from uyubox_core.container.metadata import MetadataError, deserialize_metadata, serialize_metadata
 
 
 def test_serialize_nested_bytes_dict():

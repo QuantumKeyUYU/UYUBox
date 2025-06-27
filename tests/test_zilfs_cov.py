@@ -2,8 +2,8 @@ import os
 import pytest
 import subprocess
 
-import zilant_prime_core.zilfs as zfs
-from zilant_prime_core.zilfs import _truncate_file, _ZeroFile, pack_dir, unpack_dir
+import uyubox_core.zilfs as zfs
+from uyubox_core.zilfs import _truncate_file, _ZeroFile, pack_dir, unpack_dir
 
 
 @pytest.mark.skipif(not hasattr(zfs, "_ORIG_COPYFILE2"), reason="Windows-only CopyFile2 fallback")

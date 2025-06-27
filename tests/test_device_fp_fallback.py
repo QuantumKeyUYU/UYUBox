@@ -4,7 +4,7 @@
 import os
 
 from crypto_core import hash_sha3
-from zilant_prime_core.utils.device_fp_fallback import device_fp_fallback
+from uyubox_core.utils.device_fp_fallback import device_fp_fallback
 
 
 def test_cpuinfo_fingerprint(tmp_path):

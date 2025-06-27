@@ -7,7 +7,7 @@ import pytest
 
 def get_zilfs():
     try:
-        return importlib.import_module("src.zilant_prime_core.zilfs")
+        return importlib.import_module("src.uyubox_core.zilfs")
     except ModuleNotFoundError:
         return importlib.import_module("src.zilfs")
 

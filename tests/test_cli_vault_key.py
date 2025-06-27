@@ -6,8 +6,8 @@ import sys
 os.environ.setdefault("ZILANT_ALLOW_ROOT", "1")
 import hvac
 
-from zilant_prime_core import cli as cli_mod
-from zilant_prime_core.cli import VaultClient
+from uyubox_core import cli as cli_mod
+from uyubox_core.cli import VaultClient
 
 
 class DummyClient(VaultClient):
@@ -22,7 +22,7 @@ class DummyClient(VaultClient):
 
 @pytest.fixture(autouse=True)
 def patch_client(monkeypatch):
-    monkeypatch.setattr("zilant_prime_core.cli.VaultClient", DummyClient)
+    monkeypatch.setattr("uyubox_core.cli.VaultClient", DummyClient)
     monkeypatch.setattr(hvac, "Client", lambda url, token: type("C", (), {"is_authenticated": lambda self: True})())
     monkeypatch.setattr(cli_mod, "pack_file", lambda *a, **k: None)
     yield

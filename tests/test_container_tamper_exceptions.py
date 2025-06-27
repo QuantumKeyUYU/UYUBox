@@ -6,7 +6,7 @@ import pytest
 
 import audit_ledger
 import container
-import zilant_prime_core.notify as notify_mod
+import uyubox_core.notify as notify_mod
 
 
 def test_unpack_file_tamper_detected_notify_exceptions(tmp_path, monkeypatch):

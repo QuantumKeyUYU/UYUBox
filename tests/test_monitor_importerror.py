@@ -4,7 +4,7 @@ import pytest
 
 
 def test_monitor_container_importerror(monkeypatch):
-    monitor_mod = importlib.import_module("zilant_prime_core.self_heal.monitor")
+    monitor_mod = importlib.import_module("uyubox_core.self_heal.monitor")
     # Эмулируем отсутствие watchdog
     monkeypatch.setattr(monitor_mod, "Observer", None)
     with pytest.raises(ImportError):

@@ -16,7 +16,7 @@ except ImportError:
     FileSystemEventHandler = object  # type: ignore
     Observer = None  # type: ignore
 
-from zilant_prime_core.zkp import prove_intact
+from uyubox_core.zkp import prove_intact
 
 from .reaction import maybe_self_destruct, record_event, rotate_key
 

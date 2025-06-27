@@ -7,8 +7,8 @@ from click.testing import CliRunner
 from pathlib import Path
 from types import SimpleNamespace
 
-from zilant_prime_core.cli_commands import derive_key_cmd, pq_genkeypair_cmd
-from zilant_prime_core.crypto_core import derive_key_argon2id
+from uyubox_core.cli_commands import derive_key_cmd, pq_genkeypair_cmd
+from uyubox_core.crypto_core import derive_key_argon2id
 
 
 def test_derive_key_cmd(tmp_path):

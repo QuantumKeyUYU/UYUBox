@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
-from zilant_prime_core import health
+from uyubox_core import health
 
 
 def test_health_endpoints(monkeypatch):

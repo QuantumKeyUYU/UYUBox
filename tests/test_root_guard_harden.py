@@ -3,7 +3,7 @@ import ctypes.util
 import sys
 import types
 
-import zilant_prime_core.utils.root_guard as rg
+import uyubox_core.utils.root_guard as rg
 
 
 def test_harden_linux_invokes_prctl_and_seccomp(monkeypatch):

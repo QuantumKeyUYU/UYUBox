@@ -2,7 +2,7 @@ import json
 from click.testing import CliRunner
 
 from attestation import simulate_tpm_attestation
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_simulate_tpm_attestation():

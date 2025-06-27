@@ -1,6 +1,6 @@
 import pytest
 
-from zilant_prime_core.utils.shard_secret import recover_secret, split_secret
+from uyubox_core.utils.shard_secret import recover_secret, split_secret
 
 
 def test_split_secret_invalid_parts():

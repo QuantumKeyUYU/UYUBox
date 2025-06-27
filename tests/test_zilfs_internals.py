@@ -5,7 +5,7 @@ from __future__ import annotations
 import types
 from pathlib import Path
 
-from zilant_prime_core import zilfs
+from uyubox_core import zilfs
 
 
 def test_mark_sparse_noop(monkeypatch, tmp_path: Path) -> None:

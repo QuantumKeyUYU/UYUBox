@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.utils.device_fp import SALT_CONST, collect_hw_factors, compute_fp, get_device_fingerprint
+from uyubox_core.utils.device_fp import SALT_CONST, collect_hw_factors, compute_fp, get_device_fingerprint
 
 
 def test_device_fp_returns_string():

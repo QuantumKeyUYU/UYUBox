@@ -1,7 +1,7 @@
 import pytest
 
 from shard_secret import combine_signatures
-from zilant_prime_core.utils.pq_crypto import derive_key_pq
+from uyubox_core.utils.pq_crypto import derive_key_pq
 
 
 def test_derive_key_pq_invalid():

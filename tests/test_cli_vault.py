@@ -1,7 +1,7 @@
 import binascii
 import pytest
 
-import zilant_prime_core.cli as cli_mod
+import uyubox_core.cli as cli_mod
 
 
 def test_cli_vault_key_parsing(monkeypatch, tmp_path):

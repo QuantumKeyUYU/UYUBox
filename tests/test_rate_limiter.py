@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core Contributors
-from zilant_prime_core.utils.rate_limiter import RateLimiter
+from uyubox_core.utils.rate_limiter import RateLimiter
 
 
 def test_rate_limiter_allows_at_rate():

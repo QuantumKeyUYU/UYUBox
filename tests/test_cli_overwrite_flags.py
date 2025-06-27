@@ -5,7 +5,7 @@
 
 from click.testing import CliRunner
 
-from zilant_prime_core.cli import main as cli_main
+from uyubox_core.cli import main as cli_main
 
 
 def write_dummy(path, data=b""):

@@ -8,7 +8,7 @@ import hashlib
 import os
 import pytest
 
-from zilant_prime_core.crypto.aead import (
+from uyubox_core.crypto.aead import (
     DEFAULT_KEY_LENGTH,
     DEFAULT_NONCE_LENGTH,
     AEADInvalidTagError,

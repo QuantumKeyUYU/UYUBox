@@ -39,9 +39,9 @@ def test_pqcrypto_import_kyber768_branch(monkeypatch):
 
     # перезагрузим модуль для честного покрытия
     try:
-        if "zilant_prime_core.utils.pq_crypto" in sys.modules:
-            del sys.modules["zilant_prime_core.utils.pq_crypto"]
-        import zilant_prime_core.utils.pq_crypto as pq_reload
+        if "uyubox_core.utils.pq_crypto" in sys.modules:
+            del sys.modules["uyubox_core.utils.pq_crypto"]
+        import uyubox_core.utils.pq_crypto as pq_reload
 
         importlib.reload(pq_reload)
     except Exception:

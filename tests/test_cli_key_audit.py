@@ -2,7 +2,7 @@ import hashlib
 from click.testing import CliRunner
 
 from key_lifecycle import AuditLog
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_cli_key_rotate(tmp_path):

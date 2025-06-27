@@ -2,7 +2,7 @@ import json
 from click.testing import CliRunner
 from pathlib import Path
 
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 KEY = b"\x01" * 16
 

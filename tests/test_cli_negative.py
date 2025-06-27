@@ -5,7 +5,7 @@ import os
 from click.testing import CliRunner
 from pathlib import Path
 
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_cli_overwrite(tmp_path: Path):

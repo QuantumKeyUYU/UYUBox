@@ -6,7 +6,7 @@
 
 import pytest
 
-from zilant_prime_core.container.metadata import (
+from uyubox_core.container.metadata import (
     Metadata,
     MetadataError,
     deserialize_metadata,

@@ -2,8 +2,8 @@
 import json
 import pytest
 
-import zilant_prime_core.self_heal.heal as heal_mod
-from zilant_prime_core.self_heal.heal import SelfHealFrozen, heal_container
+import uyubox_core.self_heal.heal as heal_mod
+from uyubox_core.self_heal.heal import SelfHealFrozen, heal_container
 
 
 class DummyRecordAction:
@@ -23,7 +23,7 @@ class DummyProve:
 @pytest.fixture(autouse=True)
 def patch_dependencies(monkeypatch, tmp_path, tmp_path_factory):
     # Подменяем record_action, prove_intact и atomic_write
-    import zilant_prime_core.self_heal.heal as module
+    import uyubox_core.self_heal.heal as module
 
     monkeypatch.setattr(module, "record_action", DummyRecordAction())
     monkeypatch.setattr(module, "prove_intact", DummyProve())

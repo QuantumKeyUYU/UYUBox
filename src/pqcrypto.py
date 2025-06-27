@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from typing import cast
 
-from zilant_prime_core.utils.pq_crypto import HybridKEM
+from uyubox_core.utils.pq_crypto import HybridKEM
 
 # --------------------------------------------------------------------------- #
 #  Hybrid KEM (Kyber + XChaCha20-Poly1305)                                    #

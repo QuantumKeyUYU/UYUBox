@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.utils import screen_guard
+from uyubox_core.utils import screen_guard
 
 
 def test_iter_proc_names_empty():

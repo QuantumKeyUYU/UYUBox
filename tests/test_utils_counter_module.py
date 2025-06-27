@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.utils import counter as uc
+from uyubox_core.utils import counter as uc
 
 
 def test_counter_read_write_increment(tmp_path, monkeypatch):

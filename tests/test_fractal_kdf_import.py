@@ -10,8 +10,8 @@ def test_fractal_kdf_fallback(monkeypatch) -> None:
     monkeypatch.delenv("BLAKE3_IMPL", raising=False)
 
     # перезагружаем модуль, чтобы отработала ветка без BLAKE3
-    if "zilant_prime_core.crypto.fractal_kdf" in globals():
-        del globals()["zilant_prime_core.crypto.fractal_kdf"]
+    if "uyubox_core.crypto.fractal_kdf" in globals():
+        del globals()["uyubox_core.crypto.fractal_kdf"]
 
-    mod: ModuleType = importlib.import_module("zilant_prime_core.crypto.fractal_kdf")
+    mod: ModuleType = importlib.import_module("uyubox_core.crypto.fractal_kdf")
     assert hasattr(mod, "fractal_kdf")

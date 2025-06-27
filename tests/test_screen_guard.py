@@ -20,7 +20,7 @@ def reload_module(monkeypatch):
                 return orig(name, *args, **kwargs)
 
             monkeypatch.setattr(builtins, "__import__", fake_import)
-        module = importlib.reload(importlib.import_module("zilant_prime_core.utils.screen_guard"))
+        module = importlib.reload(importlib.import_module("uyubox_core.utils.screen_guard"))
         return module
 
     return _reload

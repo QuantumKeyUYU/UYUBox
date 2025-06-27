@@ -3,7 +3,7 @@ from cryptography.exceptions import InvalidTag
 from pathlib import Path
 
 from container import pack_file, unpack_file
-from zilant_prime_core.zilfs import unpack_dir
+from uyubox_core.zilfs import unpack_dir
 
 
 def test_invalid_tag_raises(tmp_path: Path) -> None:

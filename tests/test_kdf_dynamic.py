@@ -6,8 +6,8 @@
 import os
 import pytest
 
-from zilant_prime_core.crypto.kdf import DEFAULT_KEY_LENGTH, derive_key, derive_key_dynamic, generate_salt
-from zilant_prime_core.utils.constants import DEFAULT_SALT_LENGTH
+from uyubox_core.crypto.kdf import DEFAULT_KEY_LENGTH, derive_key, derive_key_dynamic, generate_salt
+from uyubox_core.utils.constants import DEFAULT_SALT_LENGTH
 
 
 def test_derive_key_basic_and_invalid():

@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 
-from zilant_prime_core.utils import device_fp as df
+from uyubox_core.utils import device_fp as df
 
 
 def test_cpu_processor_exception(monkeypatch):

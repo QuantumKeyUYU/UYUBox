@@ -5,6 +5,6 @@
 
 import importlib
 
-mod = importlib.import_module("src.zilant_prime_core.utils.formats")
+mod = importlib.import_module("src.uyubox_core.utils.formats")
 # Убедимся, что модуль загрузился без ошибок
 assert hasattr(mod, "to_hex") and hasattr(mod, "from_hex")

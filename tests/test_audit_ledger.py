@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from pathlib import Path
 
 from audit_ledger import record_action
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_record_and_show(tmp_path, monkeypatch):

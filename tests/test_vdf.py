@@ -5,7 +5,7 @@ import pytest
 import sys
 import time
 
-from zilant_prime_core.vdf.vdf import generate_posw_sha256, verify_posw_sha256
+from uyubox_core.vdf.vdf import generate_posw_sha256, verify_posw_sha256
 
 
 @pytest.mark.parametrize("steps", [1, 2, 10])

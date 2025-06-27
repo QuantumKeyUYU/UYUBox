@@ -34,19 +34,19 @@ No blocked licenses.
   - Ensure paths are validated
 - src/utils/file_utils.py:15 **low**: open() for writing
   - Ensure paths are validated
-- src/zilant_prime_core/cli.py:325 **medium**: subprocess.run call
+- src/uyubox_core/cli.py:325 **medium**: subprocess.run call
   - Validate input and avoid shell=True
-- src/zilant_prime_core/cli.py:487 **medium**: subprocess.run call
+- src/uyubox_core/cli.py:487 **medium**: subprocess.run call
   - Validate input and avoid shell=True
-- src/zilant_prime_core/cli.py:35 **medium**: subprocess.run call
+- src/uyubox_core/cli.py:35 **medium**: subprocess.run call
   - Validate input and avoid shell=True
-- src/zilant_prime_core/cli.py:232 **low**: open() for writing
+- src/uyubox_core/cli.py:232 **low**: open() for writing
   - Ensure paths are validated
-- src/zilant_prime_core/utils/honeyfile.py:17 **low**: open() for writing
+- src/uyubox_core/utils/honeyfile.py:17 **low**: open() for writing
   - Ensure paths are validated
-- src/zilant_prime_core/utils/secure_logging.py:44 **low**: open() for writing
+- src/uyubox_core/utils/secure_logging.py:44 **low**: open() for writing
   - Ensure paths are validated
-- src/zilant_prime_core/utils/secure_logging.py:77 **low**: open() for writing
+- src/uyubox_core/utils/secure_logging.py:77 **low**: open() for writing
   - Ensure paths are validated
 
 

@@ -4,8 +4,8 @@
 import json
 from pathlib import Path
 
-from zilant_prime_core.self_heal import heal as heal_mod
-from zilant_prime_core.self_heal.heal import heal_container
+from uyubox_core.self_heal import heal as heal_mod
+from uyubox_core.self_heal.heal import heal_container
 
 
 def make_file(tmp_path: Path, header: bytes) -> Path:

@@ -1,7 +1,7 @@
 import hashlib
 
 from container import get_metadata, pack_file
-from zilant_prime_core.self_heal.heal import heal_container
+from uyubox_core.self_heal.heal import heal_container
 
 
 def test_heal_recovery_key(tmp_path):

@@ -4,7 +4,7 @@
 import hashlib
 import time
 
-from zilant_prime_core.utils.self_watchdog import compute_self_hash, init_self_watchdog
+from uyubox_core.utils.self_watchdog import compute_self_hash, init_self_watchdog
 
 
 def test_compute_self_hash(tmp_path):
@@ -21,7 +21,7 @@ def test_watchdog_detects_change(tmp_path, monkeypatch, capsys):
     lock = str(p) + ".lock"
 
     # Мокаем os._exit **до** инициализации
-    import zilant_prime_core.utils.self_watchdog as wd
+    import uyubox_core.utils.self_watchdog as wd
 
     called = {}
 

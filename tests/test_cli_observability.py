@@ -1,8 +1,8 @@
 import json
 from click.testing import CliRunner
 
-from zilant_prime_core.cli import cli
-from zilant_prime_core.health import app
+from uyubox_core.cli import cli
+from uyubox_core.health import app
 
 
 def test_json_output(tmp_path):

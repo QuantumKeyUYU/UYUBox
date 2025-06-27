@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 # demo_secure.py
-from zilant_prime_core.utils import get_secure_logger
+from uyubox_core.utils import get_secure_logger
 
 if __name__ == "__main__":
     slog = get_secure_logger("demo_secure.log")

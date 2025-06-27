@@ -5,16 +5,16 @@ import json
 import os
 import pytest
 
-from zilant_prime_core.container.metadata import (
+from uyubox_core.container.metadata import (
     Metadata,
     MetadataError,
     deserialize_metadata,
     new_meta_for_file,
     serialize_metadata,
 )
-from zilant_prime_core.container.unpack import PackError, UnpackError, pack, unpack
-from zilant_prime_core.crypto.aead import DEFAULT_NONCE_LENGTH
-from zilant_prime_core.crypto.kdf import DEFAULT_SALT_LENGTH
+from uyubox_core.container.unpack import PackError, UnpackError, pack, unpack
+from uyubox_core.crypto.aead import DEFAULT_NONCE_LENGTH
+from uyubox_core.crypto.kdf import DEFAULT_SALT_LENGTH
 
 # —————————————————————————————————————————————
 # METADATA
@@ -118,7 +118,7 @@ def test_unpack_malformed_containers(tmp_path):
         unpack(c, tmp_path, "pw")
     # missing salt/nonce
     # build a valid metadata header, then stop
-    from zilant_prime_core.container.metadata import serialize_metadata
+    from uyubox_core.container.metadata import serialize_metadata
 
     m = {"filename": "f", "size": 1}
     mb = serialize_metadata(m)
@@ -128,7 +128,7 @@ def test_unpack_malformed_containers(tmp_path):
 
 
 def test_unpack_invalid_fields(tmp_path):
-    from zilant_prime_core.container.metadata import serialize_metadata
+    from uyubox_core.container.metadata import serialize_metadata
 
     # missing filename
     m1 = {"size": 1}
@@ -148,7 +148,7 @@ def test_unpack_invalid_fields(tmp_path):
 
 
 def test_unpack_bad_tag(tmp_path):
-    from zilant_prime_core.container.metadata import serialize_metadata
+    from uyubox_core.container.metadata import serialize_metadata
 
     m = {"filename": "f", "size": 0}
     mb = serialize_metadata(m)

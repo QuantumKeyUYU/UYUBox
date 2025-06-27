@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.container.unpack import UnpackError, unpack
+from uyubox_core.container.unpack import UnpackError, unpack
 
 
 def test_unpack_file_bad_meta(tmp_path):

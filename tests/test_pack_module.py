@@ -4,8 +4,8 @@
 import pytest
 from pathlib import Path
 
-from zilant_prime_core.container.pack import pack
-from zilant_prime_core.container.unpack import unpack
+from uyubox_core.container.pack import pack
+from uyubox_core.container.unpack import unpack
 
 
 def test_pack_unpack_roundtrip(tmp_path: Path):

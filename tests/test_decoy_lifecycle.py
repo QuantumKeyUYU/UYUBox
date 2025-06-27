@@ -5,8 +5,8 @@ import time
 from click.testing import CliRunner
 from pathlib import Path
 
-from zilant_prime_core.cli import cli
-from zilant_prime_core.utils.decoy import generate_decoy_files, sweep_expired_decoys
+from uyubox_core.cli import cli
+from uyubox_core.utils.decoy import generate_decoy_files, sweep_expired_decoys
 
 
 def test_decoy_sweep_logging(tmp_path, monkeypatch):

@@ -6,7 +6,7 @@ import importlib
 import pytest
 from types import SimpleNamespace
 
-mon = importlib.import_module("zilant_prime_core.self_heal.monitor")
+mon = importlib.import_module("uyubox_core.self_heal.monitor")
 
 
 def test_monitor_container_importerror(monkeypatch):

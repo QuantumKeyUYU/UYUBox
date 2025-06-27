@@ -1,4 +1,4 @@
-from zilant_prime_core.crypto_core import derive_key_double
+from uyubox_core.crypto_core import derive_key_double
 
 
 def test_double_kdf_length_and_determinism():

@@ -7,7 +7,7 @@ from cryptography.exceptions import InvalidTag
 
 import audit_ledger
 import container
-from zilant_prime_core.notify import Notifier
+from uyubox_core.notify import Notifier
 
 
 def test_get_open_attempts_counts(tmp_path):

@@ -8,7 +8,7 @@ import subprocess
 import sys
 import uuid
 
-from zilant_prime_core.utils.device_fp import collect_hw_factors, compute_fp, get_device_fingerprint
+from uyubox_core.utils.device_fp import collect_hw_factors, compute_fp, get_device_fingerprint
 
 
 def test_machine_exception(monkeypatch):

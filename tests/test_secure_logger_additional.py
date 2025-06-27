@@ -3,7 +3,7 @@
 
 import secrets
 
-from zilant_prime_core.utils.secure_logging import SecureLogger
+from uyubox_core.utils.secure_logging import SecureLogger
 
 
 def test_skip_line_without_separator(tmp_path):

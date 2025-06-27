@@ -1,7 +1,7 @@
 from click.testing import CliRunner
 
 from timelock import lock_file, unlock_file
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_lock_unlock(tmp_path, monkeypatch):

@@ -51,7 +51,7 @@ def test_pq_key_none(tmp_path):
 
 
 def test_vdf_invalid_steps(tmp_path):
-    src = "from zilant_prime_core.vdf import generate_posw_sha256\ngenerate_posw_sha256(b'd', 0)\n"
+    src = "from uyubox_core.vdf import generate_posw_sha256\ngenerate_posw_sha256(b'd', 0)\n"
     fixed, out = _run_semgrep("vdf-invalid-steps.yml", src, tmp_path, autofix=True)
     assert "generate_posw_sha256(b'd', 1)" in fixed
     assert out.get("results")

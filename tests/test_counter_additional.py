@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.counter import DistributedCounter
+from uyubox_core.counter import DistributedCounter
 
 
 def test_short_hmac_key(tmp_path):

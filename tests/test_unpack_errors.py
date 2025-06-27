@@ -6,8 +6,8 @@
 import pytest
 import struct
 
-from zilant_prime_core.container.unpack import UnpackError, unpack
-from zilant_prime_core.utils.constants import HEADER_FMT, MAGIC, VERSION
+from uyubox_core.container.unpack import UnpackError, unpack
+from uyubox_core.utils.constants import HEADER_FMT, MAGIC, VERSION
 
 
 def _make_header(m=MAGIC, v=VERSION, meta=0, payload=0, tag=0):

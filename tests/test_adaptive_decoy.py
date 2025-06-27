@@ -1,6 +1,6 @@
 import pytest
 
-from zilant_prime_core.zilfs import ZilantFS
+from uyubox_core.zilfs import ZilantFS
 
 pytestmark = pytest.mark.zilfs
 

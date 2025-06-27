@@ -3,7 +3,7 @@
 
 from click.testing import CliRunner
 
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def test_unpack_dest_is_dir(tmp_path):

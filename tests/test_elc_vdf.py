@@ -4,7 +4,7 @@
 import hashlib
 import pytest
 
-from zilant_prime_core.vdf.phase_vdf import generate_elc_vdf, verify_elc_vdf
+from uyubox_core.vdf.phase_vdf import generate_elc_vdf, verify_elc_vdf
 
 
 def test_elc_vdf_basic():

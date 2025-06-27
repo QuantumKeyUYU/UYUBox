@@ -4,7 +4,7 @@
 import os
 import pytest
 
-import zilant_prime_core.zilfs as zilfs
+import uyubox_core.zilfs as zilfs
 
 ZilantFS = zilfs.ZilantFS
 

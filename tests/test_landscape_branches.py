@@ -5,7 +5,7 @@ import os
 import pytest
 import secrets
 
-from zilant_prime_core.utils.secure_logging import SecureLogger, get_secure_logger
+from uyubox_core.utils.secure_logging import SecureLogger, get_secure_logger
 
 
 def test_secure_logger_accepts_raw_bytes_key(tmp_path):
@@ -24,7 +24,7 @@ def test_secure_logger_invalid_key_raises():
 
 def test_get_secure_logger_singleton(monkeypatch, tmp_path):
     # Сбросим singleton
-    import zilant_prime_core.utils.secure_logging as sl
+    import uyubox_core.utils.secure_logging as sl
 
     sl._default = None
 

@@ -3,7 +3,7 @@
 
 # tests/test_metadata_optional_extra.py
 
-from src.zilant_prime_core.container.metadata import Metadata
+from src.uyubox_core.container.metadata import Metadata
 
 
 def test_metadata_default_extra_not_none():

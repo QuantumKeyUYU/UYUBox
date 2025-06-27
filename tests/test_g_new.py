@@ -6,7 +6,7 @@
 import math
 import pytest
 
-from zilant_prime_core.crypto.g_new import G_new, GNewError
+from uyubox_core.crypto.g_new import G_new, GNewError
 
 
 def test_g_new_basic():

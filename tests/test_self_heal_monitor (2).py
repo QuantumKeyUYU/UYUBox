@@ -2,7 +2,7 @@
 import pytest
 import time
 
-import zilant_prime_core.self_heal.monitor as mon_mod
+import uyubox_core.self_heal.monitor as mon_mod
 
 
 @pytest.fixture(autouse=True)

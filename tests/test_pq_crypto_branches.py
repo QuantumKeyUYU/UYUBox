@@ -8,7 +8,7 @@ import pytest
 import sys
 
 # Импортируем как отдельный модуль — путь подстрой под себя
-import zilant_prime_core.utils.pq_crypto as pq
+import uyubox_core.utils.pq_crypto as pq
 
 
 def test_pq_crypto_import_branch_17(monkeypatch):
@@ -21,11 +21,11 @@ def test_pq_crypto_import_branch_17(monkeypatch):
     sys.modules["pqclean.branchfree"] = None
 
     # Нужно также временно удалить модули из already-imported
-    if "zilant_prime_core.utils.pq_crypto" in sys.modules:
-        del sys.modules["zilant_prime_core.utils.pq_crypto"]
+    if "uyubox_core.utils.pq_crypto" in sys.modules:
+        del sys.modules["uyubox_core.utils.pq_crypto"]
 
     try:
-        import zilant_prime_core.utils.pq_crypto as pq_reload
+        import uyubox_core.utils.pq_crypto as pq_reload
 
         importlib.reload(pq_reload)
     except Exception:

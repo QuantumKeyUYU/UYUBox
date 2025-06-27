@@ -4,7 +4,7 @@
 import os
 import time
 
-import src.zilant_prime_core.utils.self_watchdog as wd
+import src.uyubox_core.utils.self_watchdog as wd
 
 
 def test_init_self_watchdog_default_lockfile(monkeypatch):

@@ -3,7 +3,7 @@
 
 import pytest
 
-import zilant_prime_core.cli as cli_mod
+import uyubox_core.cli as cli_mod
 
 
 def test_pack_bytes_success(tmp_path):

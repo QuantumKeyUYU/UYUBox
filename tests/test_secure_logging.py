@@ -7,7 +7,7 @@ import pytest
 import secrets
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-from zilant_prime_core.utils.secure_logging import SecureLogger, get_secure_logger
+from uyubox_core.utils.secure_logging import SecureLogger, get_secure_logger
 
 
 def test_secure_logger_roundtrip(tmp_path, monkeypatch):
@@ -22,7 +22,7 @@ def test_secure_logger_roundtrip(tmp_path, monkeypatch):
 
 
 def test_get_secure_logger_singleton(tmp_path, monkeypatch):
-    import zilant_prime_core.utils.secure_logging as sl_module
+    import uyubox_core.utils.secure_logging as sl_module
 
     monkeypatch.delenv("ZILANT_LOG_KEY", raising=False)
     sl_module._default = None
@@ -106,7 +106,7 @@ def test_secure_logger_invalid_key_raises():
 
 
 def test_get_secure_logger_singleton_isolation(tmp_path, monkeypatch):
-    import zilant_prime_core.utils.secure_logging as sl_module
+    import uyubox_core.utils.secure_logging as sl_module
 
     monkeypatch.delenv("ZILANT_LOG_KEY", raising=False)
     sl_module._default = None
@@ -152,7 +152,7 @@ def test_secure_logger_handles_corrupt_log(tmp_path):
 def test_secure_logger_fields_to_str(tmp_path):
     key = secrets.token_bytes(32)
     log_file = str(tmp_path / "fields.log")
-    from zilant_prime_core.utils.secure_logging import SecureLogger as SL
+    from uyubox_core.utils.secure_logging import SecureLogger as SL
 
     class DummyObj:
         def __str__(self):
@@ -206,14 +206,14 @@ def test_tampered_line_restores(tmp_path):
 
 
 def test_secure_logger_bad_key(tmp_path):
-    import zilant_prime_core.utils.secure_logging as secure_logging
+    import uyubox_core.utils.secure_logging as secure_logging
 
     with pytest.raises(ValueError):
         secure_logging.SecureLogger(key=b"short", log_path=str(tmp_path / "x.log"))
 
 
 def test_get_secure_logger_singleton_and_env(tmp_path, monkeypatch):
-    import zilant_prime_core.utils.secure_logging as secure_logging
+    import uyubox_core.utils.secure_logging as secure_logging
 
     secure_logging._default = None
     monkeypatch.delenv("ZILANT_LOG_KEY", raising=False)

@@ -5,7 +5,7 @@ import os
 import pytest
 import secrets
 
-import zilant_prime_core.utils.secure_logging as secure_logging
+import uyubox_core.utils.secure_logging as secure_logging
 
 
 def test_secure_logger_bad_key(tmp_path):

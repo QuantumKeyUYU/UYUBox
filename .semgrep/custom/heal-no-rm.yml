@@ -5,4 +5,4 @@ rules:
     languages: [python]
     pattern: subprocess.$FUNC(["rm", "-rf", ...])
     paths:
-      include: ["src/zilant_prime_core/self_heal/**"]
+      include: ["src/uyubox_core/self_heal/**"]

@@ -1,4 +1,4 @@
-# src/zilant_prime_core/self_heal/heal.py
+# src/uyubox_core/self_heal/heal.py
 # SPDX-License-Identifier: MIT
 """Core logic for container self-healing."""
 
@@ -14,8 +14,8 @@ from audit_ledger import record_action
 from container import HEADER_SEPARATOR, pack
 from crypto_core import hash_sha3
 from utils.file_utils import atomic_write
-from zilant_prime_core.crypto.fractal_kdf import fractal_kdf
-from zilant_prime_core.zkp import prove_intact
+from uyubox_core.crypto.fractal_kdf import fractal_kdf
+from uyubox_core.zkp import prove_intact
 
 
 class SelfHealFrozen(Exception):

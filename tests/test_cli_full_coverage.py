@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 from click.testing import CliRunner
 
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 runner = CliRunner()
 
@@ -53,7 +53,7 @@ def test_pack_file_exists_and_yes_overwrite(tmp_path, monkeypatch):
 def test_pack_internal_error(monkeypatch, tmp_path):
     src = make_file(tmp_path)
     monkeypatch.setattr(
-        "zilant_prime_core.cli._pack_bytes",
+        "uyubox_core.cli._pack_bytes",
         lambda *a, **k: (_ for _ in ()).throw(Exception("fail")),
     )
     result = runner.invoke(cli, ["pack", str(src), "-p", "pw"])
@@ -114,7 +114,7 @@ def test_unpack_internal_error(monkeypatch, tmp_path):
     cont = tmp_path / "c.zil"
     cont.write_bytes(b"hdr\npayload")
     monkeypatch.setattr(
-        "zilant_prime_core.cli._unpack_bytes",
+        "uyubox_core.cli._unpack_bytes",
         lambda *a, **k: (_ for _ in ()).throw(Exception("fail")),
     )
     result = runner.invoke(cli, ["unpack", str(cont), "-p", "pw"])

@@ -3,7 +3,7 @@
 
 import pytest
 
-import zilant_prime_core.watchdog as wd
+import uyubox_core.watchdog as wd
 
 
 def test_hash_sources_and_zeroize(tmp_path, monkeypatch):
@@ -18,8 +18,8 @@ def test_hash_sources_and_zeroize(tmp_path, monkeypatch):
     assert wd._hash_sources([f1, f2]) != h
 
     # prepare zeroize stubs
-    monkeypatch.setattr("zilant_prime_core.utils.secure_logging.zeroize", lambda: None)
-    monkeypatch.setattr("zilant_prime_core.notify.Notifier", lambda: type("N", (), {"notify": lambda self, m: None})())
+    monkeypatch.setattr("uyubox_core.utils.secure_logging.zeroize", lambda: None)
+    monkeypatch.setattr("uyubox_core.notify.Notifier", lambda: type("N", (), {"notify": lambda self, m: None})())
 
     code = {}
 
@@ -42,7 +42,7 @@ def test_zeroize_handles_errors(monkeypatch):
 
     monkeypatch.setattr(wd.sys, "exit", fake_exit)
     monkeypatch.setattr(
-        "zilant_prime_core.utils.secure_logging.zeroize",
+        "uyubox_core.utils.secure_logging.zeroize",
         lambda: (_ for _ in ()).throw(RuntimeError()),
     )
     with pytest.raises(SystemExit):

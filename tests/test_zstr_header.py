@@ -2,7 +2,7 @@ import json
 import pytest
 from pathlib import Path
 
-from zilant_prime_core.zilfs import pack_dir_stream
+from uyubox_core.zilfs import pack_dir_stream
 
 pytestmark = pytest.mark.zilfs
 

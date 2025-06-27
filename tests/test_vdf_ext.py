@@ -4,7 +4,7 @@
 import hashlib
 import pytest
 
-from zilant_prime_core.vdf.vdf import generate_posw_sha256, prove_posw_sha256, verify_posw_sha256
+from uyubox_core.vdf.vdf import generate_posw_sha256, prove_posw_sha256, verify_posw_sha256
 
 
 def test_generate_invalid_seed_type():

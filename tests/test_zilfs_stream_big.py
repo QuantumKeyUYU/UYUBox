@@ -3,9 +3,9 @@ import importlib
 import shutil
 from pathlib import Path
 
-from zilant_prime_core.zilfs import ZilantFS
+from uyubox_core.zilfs import ZilantFS
 
-zl = importlib.import_module("zilant_prime_core.zilfs")
+zl = importlib.import_module("uyubox_core.zilfs")
 
 
 def test_zilfs_stream_big(tmp_path: Path, monkeypatch):

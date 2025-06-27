@@ -4,7 +4,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="zilant_prime_core",
+    name="uyubox_core",
     version="0.1.0",
     description="Zilant Prime Core library",
     author="Zilant Prime Core contributors",
@@ -19,7 +19,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "zilant=zilant_prime_core.cli:main",
+            "uyubox=uyubox_core.cli:main",
         ],
     },
 )

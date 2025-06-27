@@ -1,7 +1,7 @@
 import time
 from pathlib import Path
 
-from zilant_prime_core import decoy_gen
+from uyubox_core import decoy_gen
 
 
 def test_decoy_auto_purge(tmp_path: Path) -> None:

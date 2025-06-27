@@ -3,7 +3,7 @@
 
 import time
 
-from zilant_prime_core.metrics import metrics
+from uyubox_core.metrics import metrics
 
 
 def test_metrics_track():

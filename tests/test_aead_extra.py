@@ -4,8 +4,8 @@
 import pytest
 from cryptography.exceptions import InvalidTag
 
-from zilant_prime_core.crypto import aead as aead_mod
-from zilant_prime_core.crypto.aead import (
+from uyubox_core.crypto import aead as aead_mod
+from uyubox_core.crypto.aead import (
     DEFAULT_KEY_LENGTH,
     DEFAULT_NONCE_LENGTH,
     AEADError,

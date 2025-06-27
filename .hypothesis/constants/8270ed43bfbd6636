@@ -1,4 +1,4 @@
-# file: C:\Users\User\zilant-prime-core\src\zilant_prime_core\cli.py
+# file: C:\Users\User\zilant-prime-core\src\uyubox_core\cli.py
 # hypothesis_version: 6.131.14
 
 ['-', '--dest', '--output', '--password', '-d', '-o', '-p', '.zil', 'Aborted', 'Missing password', 'Password', '__main__', 'archive', 'pack', 'src', 'unpack']

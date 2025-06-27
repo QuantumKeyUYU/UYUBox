@@ -13,8 +13,8 @@ REPORT = Path("cli_autodoc_report.md")
 
 
 def find_cli_files() -> Iterable[Path]:
-    yield SRC / "zilant_prime_core" / "cli.py"
-    yield SRC / "zilant_prime_core" / "cli_commands.py"
+    yield SRC / "uyubox_core" / "cli.py"
+    yield SRC / "uyubox_core" / "cli_commands.py"
 
 
 def analyze_file(path: Path) -> list[dict[str, str]]:
@@ -48,7 +48,7 @@ def analyze_file(path: Path) -> list[dict[str, str]]:
                         }
                     )
             # Check API functions (public, not starting with _ and outside CLI files)
-            elif path.parts[1] != "zilant_prime_core" or path.name not in {"cli.py", "cli_commands.py"}:
+            elif path.parts[1] != "uyubox_core" or path.name not in {"cli.py", "cli_commands.py"}:
                 if not name.startswith("_"):
                     doc = ast.get_docstring(node)
                     if not doc or len(doc.strip()) < 10:

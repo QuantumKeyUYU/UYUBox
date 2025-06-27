@@ -4,7 +4,7 @@ import hvac
 import os
 import pytest
 
-from zilant_prime_core.utils.vault_client import VaultClient
+from uyubox_core.utils.vault_client import VaultClient
 
 # ─── Заглушки hvac.Client ─────────────────────────────────────────────────────────
 

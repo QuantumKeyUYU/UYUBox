@@ -67,20 +67,20 @@ CLI использует эти функции при старте, что за�
 ## Установка
 
 ```bash
-pip install zilant-prime-core
+pip install uyubox-core
 
 # optional: ZKP features
-pip install "zilant-prime-core[zkp]"
+pip install "uyubox-core[zkp]"
 
 # CLI utilities
-pip install "zilant-prime-core[cli]"
+pip install "uyubox-core[cli]"
 
 # legacy Python (<=3.10)
-pip install "zilant-prime-core[legacy]"
+pip install "uyubox-core[legacy]"
 # (only needed on Python 3.10 and below)
 
 # опционально: автодополнение
-source completions/zilant.bash  # bash
+source completions/uyubox.bash  # bash
 ```
 
 ---
@@ -88,33 +88,36 @@ source completions/zilant.bash  # bash
 ## Quickstart
 
 ```bash
-pip install zilant-prime-core
+pip install uyubox-core
+
+# Show CLI usage
+uyubox --help
 
 # Шифрование файла:
-zilctl pack secret.txt secret.zil
+uyubox pack secret.txt secret.zil
 
 # С генерацией фейковых данных и метаданных:
-zilctl pack secret.txt --fake-metadata --decoy 2 -p mypass
+uyubox pack secret.txt --fake-metadata --decoy 2 -p mypass
 
 # Или через HashiCorp Vault (поле `password`):
 export VAULT_ADDR="https://vault.example.com"
 export VAULT_TOKEN="s.1a2b3c4d"
-zilctl pack secret.txt --vault-path secret/data/zilant/password
+uyubox pack secret.txt --vault-path secret/data/zilant/password
 
 # Расшифровка:
-zilctl unpack secret.zil --output-dir ./out
+uyubox unpack secret.zil --output-dir ./out
 
 # Honeypot-режим (выдаст приманку при ошибке пароля):
-zilctl unpack secret.zil -p wrong --honeypot-test
+uyubox unpack secret.zil -p wrong --honeypot-test
 
 Пример сравнения метаданных настоящего и фейкового контейнера:
 
 ```bash
-zilctl uyi show-metadata secret.zil
+uyubox uyi show-metadata secret.zil
 {"magic":"ZILANT","version":1,"mode":"classic","nonce_hex":"...","orig_size":5,
 "checksum_hex":"...","owner":"anonymous","timestamp":"1970-01-01T00:00:00Z","origin":"N/A"}
 
-zilctl uyi show-metadata decoy_abcd.zil
+uyubox uyi show-metadata decoy_abcd.zil
 {"magic":"ZILANT","version":1,"mode":"classic","nonce_hex":"...","orig_size":1024,
 "checksum_hex":"...","owner":"anonymous","timestamp":"1970-01-01T00:00:00Z","origin":"N/A"}
 ```
@@ -152,7 +155,7 @@ its expiration, the audit ledger records a `decoy_removed_early` event. When
 cleanup occurs (either automatically or via sweep), a `decoy_purged` entry is
 added.
 
-Run `zilctl --decoy-sweep` to remove expired decoys manually. With the
+Run `uyubox --decoy-sweep` to remove expired decoys manually. With the
 `--paranoid` flag the CLI prints how many stale decoys were removed at startup.
 
 ### Shamir Secret Sharing
@@ -160,12 +163,12 @@ Run `zilctl --decoy-sweep` to remove expired decoys manually. With the
 Разделите мастер‑ключ на части и восстановите его при необходимости:
 
 ```bash
-zilctl key shard export --master-key cosign.key \
+uyubox key shard export --master-key cosign.key \
     --threshold 3 --shares 5 --output-dir shards
 
 # храните файлы shards/share*.hex и shards/meta.json в разных безопасных местах
 
-zilctl key shard import --input-dir shards --output-file master.key
+uyubox key shard import --input-dir shards --output-file master.key
 ```
 
 Храните полученные шард‑бэкапы на отдельных офлайн‑носителях. Для восстановления
@@ -177,14 +180,14 @@ zilctl key shard import --input-dir shards --output-file master.key
 Проверить целостность большого контейнера можно без распаковки:
 
 ```bash
-zilctl stream verify big.zst --key master.key
+uyubox stream verify big.zst --key master.key
 ```
 
 Проверить заголовок контейнера без распаковки можно так:
 
 ```bash
-zilctl uyi verify-integrity secret.zil
-zilctl uyi show-metadata secret.zil
+uyubox uyi verify-integrity secret.zil
+uyubox uyi show-metadata secret.zil
 ```
 
 Изменение хотя бы одного байта приведёт к ошибке «MAC mismatch».
@@ -194,8 +197,8 @@ zilctl uyi show-metadata secret.zil
 Гибридное шифрование (Kyber768+X25519) доступно через подкоманды ``hpke``:
 
 ```bash
-zilctl hpke encrypt src.bin ct.bin --pq-pub kyber.pk --x-pub x25519.pk
-zilctl hpke decrypt ct.bin out.bin --pq-sk kyber.sk --x-sk x25519.sk
+uyubox hpke encrypt src.bin ct.bin --pq-pub kyber.pk --x-pub x25519.pk
+    uyubox hpke decrypt ct.bin out.bin --pq-sk kyber.sk --x-sk x25519.sk
 ```
 
 ## Root Baseline
@@ -220,16 +223,16 @@ Example bypass for testing:
 
 ```bash
 export ZILANT_ALLOW_ROOT=1
-python -c "import zilant_prime_core"
+python -c "import uyubox_core"
 ```
 
 `harden_linux()` prints nothing on success. You can call it explicitly:
 
 ```bash
 python - <<'EOF'
-import zilant_prime_core
+import uyubox_core
 
-zilant_prime_core.harden_linux()
+uyubox_core.harden_linux()
 print("hardened")
 EOF
 ```
@@ -237,7 +240,7 @@ EOF
 ## Migration guide
 
 ````python
-from zilant_prime_core.utils import pq_crypto
+from uyubox_core.utils import pq_crypto
 
 kem = pq_crypto.HybridKEM()
 pk_pq, sk_pq, pk_x, sk_x = kem.generate_keypair()
@@ -248,15 +251,15 @@ ss = kem.decapsulate((sk_pq, sk_x), (ct_pq, epk, b""))
 CLI registration and login via OPAQUE:
 
 ```bash
-zilctl register --server https://auth.example --username alice
-zilctl login --server https://auth.example --username alice
+uyubox register --server https://auth.example --username alice
+    uyubox login --server https://auth.example --username alice
 ```
 
 ### Self-healing Example
 
 ```bash
-zilctl heal-scan secret.zil --auto
-zilctl heal-verify secret.zil
+uyubox heal-scan secret.zil --auto
+uyubox heal-verify secret.zil
 ```
 
 ## ZilantFS
@@ -301,4 +304,4 @@ Source and tests are maintained by @QuantumKeyUYU, while documentation also list
 
 - GUI demonstration (PyQt/Web)
 - Bug bounty policy updates and SECURITY.md
-- Docker image with `ENTRYPOINT=python -c "import zilant_prime_core; zilant_prime_core.harden_linux()"`
+- Docker image with `ENTRYPOINT=python -c "import uyubox_core; uyubox_core.harden_linux()"`

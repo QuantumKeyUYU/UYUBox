@@ -4,7 +4,7 @@
 import json
 import pytest
 
-from zilant_prime_core.self_heal.heal import SelfHealFrozen, heal_container
+from uyubox_core.self_heal.heal import SelfHealFrozen, heal_container
 
 
 def test_heal_container_lock_exists(tmp_path, monkeypatch):
@@ -33,13 +33,13 @@ def test_heal_container_fail_json(tmp_path):
 def test_heal_container_limit_and_success(tmp_path, monkeypatch):
     sep = b"--SEP--"
     # Подменяем HEADER_SEPARATOR на sep, pack и hash_sha3 на тривиальные функции
-    monkeypatch.setattr("zilant_prime_core.self_heal.heal.HEADER_SEPARATOR", sep)
-    monkeypatch.setattr("zilant_prime_core.self_heal.heal.pack", lambda meta, payload, key: b"blob")
-    monkeypatch.setattr("zilant_prime_core.self_heal.heal.hash_sha3", lambda x: b"xxx")
-    monkeypatch.setattr("zilant_prime_core.self_heal.heal.fractal_kdf", lambda x: b"\x99" * 32)
-    monkeypatch.setattr("zilant_prime_core.self_heal.heal.prove_intact", lambda x: b"proof")
-    monkeypatch.setattr("zilant_prime_core.self_heal.heal.record_action", lambda a, b=None: None)
-    monkeypatch.setattr("zilant_prime_core.self_heal.heal.atomic_write", lambda p, b: p.write_bytes(b))
+    monkeypatch.setattr("uyubox_core.self_heal.heal.HEADER_SEPARATOR", sep)
+    monkeypatch.setattr("uyubox_core.self_heal.heal.pack", lambda meta, payload, key: b"blob")
+    monkeypatch.setattr("uyubox_core.self_heal.heal.hash_sha3", lambda x: b"xxx")
+    monkeypatch.setattr("uyubox_core.self_heal.heal.fractal_kdf", lambda x: b"\x99" * 32)
+    monkeypatch.setattr("uyubox_core.self_heal.heal.prove_intact", lambda x: b"proof")
+    monkeypatch.setattr("uyubox_core.self_heal.heal.record_action", lambda a, b=None: None)
+    monkeypatch.setattr("uyubox_core.self_heal.heal.atomic_write", lambda p, b: p.write_bytes(b))
     # Создаем контейнер c heal_level=2 (следующий == 3, допустимо)
     meta = {"heal_level": 2, "heal_history": []}
     payload = b"PAYLOAD"

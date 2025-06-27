@@ -4,7 +4,7 @@ from cryptography.exceptions import InvalidTag
 from pathlib import Path
 
 from container import pack_file, unpack_file
-from zilant_prime_core.utils import pq_crypto
+from uyubox_core.utils import pq_crypto
 
 
 @pytest.fixture()

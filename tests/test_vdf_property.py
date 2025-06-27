@@ -16,7 +16,7 @@ if sys.platform.startswith("win"):
 from hypothesis import given
 from hypothesis import strategies as st
 
-import zilant_prime_core.vdf as vdf_mod
+import uyubox_core.vdf as vdf_mod
 
 
 @given(

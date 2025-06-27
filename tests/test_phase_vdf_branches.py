@@ -6,7 +6,7 @@
 import hashlib
 import pytest
 
-from zilant_prime_core.vdf.phase_vdf import (
+from uyubox_core.vdf.phase_vdf import (
     VDFVerificationError,
     _validate_proof,
     _validate_seed,

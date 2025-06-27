@@ -15,8 +15,8 @@ except ImportError:  # pragma: no cover - fuzz optional
 
     pytest.skip("Atheris not installed, skipping fuzz tests", allow_module_level=True)
 
-from zilant_prime_core.container.pack import pack
-from zilant_prime_core.container.unpack import unpack
+from uyubox_core.container.pack import pack
+from uyubox_core.container.unpack import unpack
 
 
 def TestOneInput(data: bytes) -> None:

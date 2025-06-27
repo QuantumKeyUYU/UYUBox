@@ -9,8 +9,8 @@ from cryptography.exceptions import InvalidTag
 from threading import Thread
 
 from container import get_metadata, pack_file, unpack_file
-from zilant_prime_core.cli import cli
-from zilant_prime_core.utils.decoy import generate_decoy_files
+from uyubox_core.cli import cli
+from uyubox_core.utils.decoy import generate_decoy_files
 
 
 def test_decoy_and_real_indistinguishable(tmp_path, monkeypatch):

@@ -8,13 +8,13 @@ import json
 import pytest
 from pathlib import Path
 
-from zilant_prime_core.container.pack import pack
-from zilant_prime_core.container.unpack import UnpackError, unpack
-from zilant_prime_core.crypto.aead import AEADInvalidTagError
-from zilant_prime_core.utils.constants import DEFAULT_NONCE_LENGTH, DEFAULT_SALT_LENGTH
+from uyubox_core.container.pack import pack
+from uyubox_core.container.unpack import UnpackError, unpack
+from uyubox_core.crypto.aead import AEADInvalidTagError
+from uyubox_core.utils.constants import DEFAULT_NONCE_LENGTH, DEFAULT_SALT_LENGTH
 
 # Настоящий объект-модуль, а не функция
-unpack_module = importlib.import_module("zilant_prime_core.container.unpack")
+unpack_module = importlib.import_module("uyubox_core.container.unpack")
 
 
 def test_unpack_too_short_for_meta():

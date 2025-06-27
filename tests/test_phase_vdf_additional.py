@@ -5,7 +5,7 @@
 import hashlib
 import pytest
 
-from zilant_prime_core.vdf.phase_vdf import (  # :contentReference[oaicite:2]{index=2}
+from uyubox_core.vdf.phase_vdf import (  # :contentReference[oaicite:2]{index=2}
     VDFVerificationError,
     _validate_proof,
     _validate_seed,

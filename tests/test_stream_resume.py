@@ -5,7 +5,7 @@ from click.testing import CliRunner
 from pathlib import Path
 
 from streaming_aead import CHUNK
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 def _chunk_for_offset(container: Path, offset: int) -> int:

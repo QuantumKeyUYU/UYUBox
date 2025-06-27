@@ -4,7 +4,7 @@ import json
 import pytest
 import secrets
 
-from zilant_prime_core import uniform_container as container
+from uyubox_core import uniform_container as container
 
 
 def test_uniform_pack_unpack():

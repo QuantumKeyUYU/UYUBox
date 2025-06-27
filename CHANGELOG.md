@@ -73,7 +73,7 @@
 ## [0.8.6] - 2025-06-25
 
 ### Added
-- Full test coverage for `zilant_prime_core/utils/decoy.py` (including edge-cases, expired and sweep logic)
+- Full test coverage for `uyubox_core/utils/decoy.py` (including edge-cases, expired and sweep logic)
 - New tests: `test_decoy.py`, `test_expired_decoy.py`
 - Thorough validation of decoy lifecycle and expiry edge cases
 

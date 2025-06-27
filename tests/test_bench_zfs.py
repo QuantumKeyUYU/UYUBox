@@ -6,7 +6,7 @@ import sys
 import types
 
 import utils.file_utils as file_utils  # atomic_write и os.fsync
-from zilant_prime_core.bench_zfs import bench_fs
+from uyubox_core.bench_zfs import bench_fs
 
 
 def _raise_attr(fd):  # noqa: D401

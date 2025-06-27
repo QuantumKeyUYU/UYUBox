@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 
 def test_run_tray_typeerror_on_missing_qapplication(monkeypatch):
-    tray_mod = importlib.import_module("zilant_prime_core.tray")
+    tray_mod = importlib.import_module("uyubox_core.tray")
     monkeypatch.setattr(tray_mod, "QApplication", None, raising=False)
     with pytest.raises(TypeError):
         tray_mod.run_tray()
@@ -18,7 +18,7 @@ def test_run_tray_exec_called_or_skip(monkeypatch):
     Если нет — покрытие ветки есть, но тест пропускается с объяснением.
     """
     os.environ.pop("_ZILANT_TEST_MODE", None)
-    tray_mod = importlib.import_module("zilant_prime_core.tray")
+    tray_mod = importlib.import_module("uyubox_core.tray")
 
     # Мокаем всё Qt API
     fake_app = MagicMock()

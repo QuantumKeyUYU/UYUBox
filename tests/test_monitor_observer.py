@@ -1,6 +1,6 @@
 import importlib
 
-mon = importlib.import_module("zilant_prime_core.self_heal.monitor")
+mon = importlib.import_module("uyubox_core.self_heal.monitor")
 
 
 def test_monitor_happy_path(monkeypatch):

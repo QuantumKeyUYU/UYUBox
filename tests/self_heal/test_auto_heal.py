@@ -1,6 +1,6 @@
 import os
 
-from zilant_prime_core.self_heal.reaction import maybe_self_destruct, record_event, rotate_key
+from uyubox_core.self_heal.reaction import maybe_self_destruct, record_event, rotate_key
 
 
 def test_rotate_and_record(tmp_path):

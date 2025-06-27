@@ -30,7 +30,7 @@ Write-Host "🔒 SBOM создан и уязвимости проверены"
 
 # 6. Прогоняем тесты и покрытие
 pytest --maxfail=1 --disable-warnings -q
-pytest --cov=src/zilant_prime_core --cov-report=term-missing --cov-report=html:htmlcov --cov-report=xml:coverage.xml
+pytest --cov=src/uyubox_core --cov-report=term-missing --cov-report=html:htmlcov --cov-report=xml:coverage.xml
 Write-Host "✅ Тесты и покрытие завершены!"
 
 Write-Host "🎉 [ZILANT Prime™] Проект полностью готов к работе! Добро пожаловать!"

@@ -3,7 +3,7 @@
 
 import pytest
 
-from zilant_prime_core.crypto.signature import SignatureError, generate_keypair, sign, verify
+from uyubox_core.crypto.signature import SignatureError, generate_keypair, sign, verify
 
 
 def test_signature_roundtrip():

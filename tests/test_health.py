@@ -1,4 +1,4 @@
-from zilant_prime_core.health import app
+from uyubox_core.health import app
 
 
 def test_health_endpoints():

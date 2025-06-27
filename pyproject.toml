@@ -6,7 +6,7 @@ requires = ["setuptools", "wheel", "cffi"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name            = "zilant-prime-core"
+name = "uyubox-core"
 version         = "0.9.9b2"
 description     = "ZILANT Prime™ core: AEAD, Argon2id, Phase-VDF, .zil container & CLI"
 readme          = "README.md"
@@ -42,7 +42,7 @@ dependencies = [
 ]
 
 [project.scripts]
-zilant = "zilant_prime_core.cli:cli"
+uyubox = "uyubox_core.cli:main"
 
 [project.urls]
 Homepage      = "https://github.com/QuantumKeyUYU/zilant-prime-core"
@@ -132,9 +132,9 @@ namespaces = false
 
 [tool.setuptools]
 ext-modules = [
-  { name = "zilant_prime_core.utils.crypto_core", sources = ["src/zilant_prime_core/utils/crypto_core.c"], language = "c" },
-  { name = "zilant_prime_core.utils.hardening", sources = ["src/zilant_prime_core/utils/hardening.c"], language = "c" },
-  { name = "zilant_prime_core.zil_mobile_api", sources = ["src/zilant_prime_core/zil_mobile_api.c"], language = "c" }
+  { name = "uyubox_core.utils.crypto_core", sources = ["src/uyubox_core/utils/crypto_core.c"], language = "c" },
+  { name = "uyubox_core.utils.hardening", sources = ["src/uyubox_core/utils/hardening.c"], language = "c" },
+  { name = "uyubox_core.zil_mobile_api", sources = ["src/uyubox_core/zil_mobile_api.c"], language = "c" }
 ]
 
 [tool.black]
@@ -144,7 +144,7 @@ target-version = ["py310", "py311"]
 [tool.isort]
 profile           = "black"
 line_length       = 120
-known_first_party = ["zilant_prime_core"]
+known_first_party = ["uyubox_core"]
 known_standard_library = ["tomllib"]
 
 

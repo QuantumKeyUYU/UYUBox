@@ -1,12 +1,12 @@
 import pytest
 from click.testing import CliRunner
 
-from zilant_prime_core.cli import cli
+from uyubox_core.cli import cli
 
 
 @pytest.mark.skipif(True, reason="Fingerprint depends on real hardware")
 def test_fingerprint_outputs_hex(monkeypatch):
-    import zilant_prime_core.utils.device_fp as dfp
+    import uyubox_core.utils.device_fp as dfp
 
     monkeypatch.setattr(dfp, "collect_hw_factors", lambda: {"a": "1"})
     monkeypatch.setattr(dfp, "compute_fp", lambda hw, salt: b"\x10" * 32)

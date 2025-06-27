@@ -7,7 +7,7 @@
 import pytest
 from click.testing import CliRunner
 
-import zilant_prime_core.cli as cli_mod
+import uyubox_core.cli as cli_mod
 
 
 @pytest.fixture
