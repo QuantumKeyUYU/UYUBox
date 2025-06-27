@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core Contributors
 
-# Architecture Overview
+# UYUBox Architecture Overview
+UYUBox builds on a minimal core providing encryption, VDF proofs and self-healing mechanisms.
 
 ```mermaid
 flowchart TD

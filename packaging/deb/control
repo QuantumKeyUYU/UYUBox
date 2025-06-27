@@ -1,7 +1,0 @@
-Package: zilant-prime-core
-Version: 0.1.0
-Section: utils
-Priority: optional
-Architecture: all
-Maintainer: Zilant
-Description: Zilant Prime Core

@@ -64,7 +64,3 @@ desktop.ini
 # Backup files
 *~
 docs/_build/
-docs/_static/key_lifecycle.png
-.zilant_log
-docs/.zilant_log
-ui/dist/

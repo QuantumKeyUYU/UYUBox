@@ -1,5 +1,5 @@
-# Quantum Security Modules
-
+# UYUBox Quantum Security
+UYUBox uses lightweight PQ primitives to stay secure against future adversaries.
 Several helper classes showcase how quantum‑resistant primitives could be used
 in practice. They are intentionally lightweight and are not full security
 implementations.

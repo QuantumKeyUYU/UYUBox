@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.10)
-project(zilantjni)
-add_library(zilant SHARED src/main/cpp/zilant_jni.c ../../../../src/zilant_prime_core/zil_mobile_api.c)
-find_library(log-lib log)
-target_link_libraries(zilant PRIVATE log-lib)
