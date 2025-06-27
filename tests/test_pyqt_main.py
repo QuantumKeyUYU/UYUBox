@@ -4,7 +4,6 @@ import pytest
 pytest.importorskip("PyQt5.QtWidgets")
 
 from PyQt5.QtWidgets import QApplication
-
 from ui.pyqt.main import MainWindow
 
 

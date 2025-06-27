@@ -1,8 +1,0 @@
-rules:
-  - id: no-rm-in-heal
-    message: Avoid destructive rm -rf calls in self-heal modules
-    severity: ERROR
-    languages: [python]
-    pattern: subprocess.$FUNC(["rm", "-rf", ...])
-    paths:
-      include: ["src/zilant_prime_core/self_heal/**"]

@@ -1,1 +1,0 @@
-Minimal Android module placeholder.
