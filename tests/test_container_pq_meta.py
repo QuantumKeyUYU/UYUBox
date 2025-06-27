@@ -15,7 +15,7 @@ def test_pack_file_pq_meta_defaults(tmp_path, monkeypatch):
         @staticmethod
         def encrypt(pub, plaintext, aad):
             # создаём «nonce» + payload
-            return b"\xAA\xBB" + plaintext
+            return b"\xaa\xbb" + plaintext
 
     monkeypatch.setattr(container, "PQAEAD", FakePQ, raising=True)
 
@@ -40,5 +40,5 @@ def test_pack_file_pq_meta_defaults(tmp_path, monkeypatch):
     assert isinstance(meta["heal_history"], list)
 
     # payload начинается с нашего «nonce» и содержит оригинальные данные
-    assert payload.startswith(b"\xAA\xBB")
+    assert payload.startswith(b"\xaa\xbb")
     assert payload.endswith(src.read_bytes())
