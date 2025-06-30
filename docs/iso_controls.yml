@@ -1,0 +1,4 @@
+controls:
+  - id: A.5.1.1
+    name: Политика безопасности
+    implementation: ''

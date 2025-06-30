@@ -1,0 +1,59 @@
+# .pre-commit-config.yaml
+
+repos:
+  # Black – автоформатирование кода
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        name: Black (format)
+        language_version: python3
+
+  # Ruff – линтинг (pre-commit поддерживается через отдельный репо)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.0
+    hooks:
+      - id: ruff
+        name: Ruff (lint)
+        args: ["--fix"]
+        language_version: python3
+
+  # isort – проверка и сортировка импортов
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.10.1
+    hooks:
+      - id: isort
+        name: isort (check imports)
+        args: ["--profile", "black"]
+        language_version: python3
+
+  # Проверка YAML, удаление лишних пробелов, финальная пустая строка
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+        name: YAML syntax check
+      - id: end-of-file-fixer
+        name: Ensure file ends with newline
+      - id: trailing-whitespace
+        name: Remove trailing whitespace
+      - id: check-added-large-files
+        name: Check for large files
+
+  # Mypy – статическая проверка типов (только для кода внутри пакета, не затрагиваем скрипты)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.16.1
+    hooks:
+      - id: mypy
+        name: mypy (type check)
+        additional_dependencies: ["types-requests", "types-PyYAML", "types-tabulate"]
+        language_version: python3
+        files: ^src/zilant_prime_core/(?!scripts/).*\.py$
+
+  - repo: local
+    hooks:
+      - id: fuzz
+        name: atheris fuzz
+        entry: python tools/atheris_fuzz.py --ci
+        language: system
+        pass_filenames: false

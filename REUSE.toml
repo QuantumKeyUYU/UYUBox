@@ -1,0 +1,30 @@
+version = 1
+
+[[annotations]]
+path = [
+  ".coveragerc",
+  ".github/cosign.pub",
+  ".github/workflows/*.yml",
+  ".github/workflows/*.yaml",
+  ".gitignore",
+  ".pre-commit-config.yaml",
+  "docs/*.md",
+  "docs/*.yml",
+  "README.md",
+  "LICENSES/*",
+  "pyproject.toml",
+  "pytest.ini",
+  "coverage.ini",
+  "sbom.json",
+  "grype-report.json",
+  "hdr",
+  "scripts/reprod.sh",
+  "start_zilant.ps1",
+  "tests/test_cli_full_coverage.py",
+  ".hypothesis/constants/*",
+  "cosign.pub"
+]
+SPDX-FileCopyrightText = [
+  "2025 Zilant Prime Core contributors"
+]
+SPDX-License-Identifier = "MIT"
