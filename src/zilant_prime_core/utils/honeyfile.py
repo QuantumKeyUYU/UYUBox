@@ -1,9 +1,14 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
+import hashlib
 import random
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
+
+from ..notify import Notifier
+from .secure_logging import get_secure_logger
 
 
 class HoneyfileError(Exception):
@@ -38,3 +43,41 @@ def check_tmp_for_honeyfiles(tmp_dir: str | None = None) -> None:
             continue
         if is_honeyfile(str(f)):
             raise HoneyfileError(f"Honeyfile detected: {f}")
+
+
+@dataclass
+class _HoneyfileEntry:
+    path: Path
+    digest: str
+    atime: float
+
+
+class HoneyfileManager:
+    """Manage honeyfiles inside a container."""
+
+    def __init__(self) -> None:
+        self._entries: list[_HoneyfileEntry] = []
+        self._log = get_secure_logger()
+        self._notifier = Notifier()
+
+    def create_honeyfile(self, container_path: str | Path, filename: str) -> Path:
+        """Create a honeyfile and register it for monitoring."""
+        dest = Path(container_path) / filename
+        create_honeyfile(str(dest))
+        digest = hashlib.sha256(dest.read_bytes()).hexdigest()
+        entry = _HoneyfileEntry(dest, digest, dest.stat().st_atime)
+        self._entries.append(entry)
+        self._log.log("honeyfile_created", path=str(dest))
+        return dest
+
+    def check_for_access(self) -> None:
+        """Check registered honeyfiles for access and send notifications."""
+        for entry in self._entries:
+            try:
+                stat = entry.path.stat()
+            except FileNotFoundError:
+                continue
+            if stat.st_atime > entry.atime:
+                self._log.log("honeyfile_accessed", path=str(entry.path))
+                self._notifier.notify(f"Honeyfile accessed: {entry.path}")
+                entry.atime = stat.st_atime

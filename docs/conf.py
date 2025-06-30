@@ -21,11 +21,8 @@ CI = os.environ.get("CI") == "true"
 
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
-    "sphinx.ext.todo",
-    "sphinx_autodoc_typehints",
-    "m2r2",
+    "sphinx.ext.viewcode",
 ]
 if not CI and "sphinx.ext.intersphinx" not in extensions:
     extensions.append("sphinx.ext.intersphinx")
@@ -62,10 +59,5 @@ nitpicky = not CI
 
 # -- HTML output -------------------------------------------------------------
 
-try:  # optional theme
-    import furo  # type: ignore  # noqa: F401
-
-    html_theme = "furo"
-except Exception:  # pragma: no cover - fallback
-    html_theme = "alabaster"
+html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
