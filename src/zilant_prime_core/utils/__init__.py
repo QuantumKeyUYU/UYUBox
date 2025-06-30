@@ -27,7 +27,7 @@ from .device_fp_fallback import device_fp_fallback
 # ───────────────────────── Encode / decode ──────────────────────────
 from .formats import from_b64, from_hex, to_b64, to_hex
 from .hash_challenge import generate_daily_challenge
-from .honeyfile import HoneyfileError, check_tmp_for_honeyfiles
+from .honeyfile import HoneyfileError, HoneyfileManager, check_tmp_for_honeyfiles
 
 # ───────────────────────────── Logging ──────────────────────────────
 from .logging import get_file_logger, get_logger
@@ -79,6 +79,7 @@ __all__: list[str] = [
     "ScreenGuardError",
     "guard",
     "HoneyfileError",
+    "HoneyfileManager",
     "check_tmp_for_honeyfiles",
     "generate_daily_challenge",
 ]
