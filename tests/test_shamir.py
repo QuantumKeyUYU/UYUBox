@@ -1,4 +1,4 @@
-from shamir import split_secret, recover_secret
+from shamir import recover_secret, split_secret
 
 
 def test_split_secret():

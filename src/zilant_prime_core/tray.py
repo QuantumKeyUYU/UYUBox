@@ -49,7 +49,7 @@ def run_tray(icon_path: str | None = None) -> None:
     test_mode = os.environ.get("_ZILANT_TEST_MODE") == "1"
 
     try:
-        app = QApplication([])  # type: ignore[operator]
+        app = QApplication([])  # type: ignore[call-arg]
     except Exception as exc:
         logging.error(f"[tray] QApplication init failed: {exc}")
         raise

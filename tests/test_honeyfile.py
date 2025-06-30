@@ -1,12 +1,11 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
-import pytest
-
 import os
+import pytest
 import sys
-from types import ModuleType
 from pathlib import Path
+from types import ModuleType
 from unittest.mock import patch
 
 sys.modules.setdefault("yaml", ModuleType("yaml"))
