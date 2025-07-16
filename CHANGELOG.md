@@ -164,3 +164,7 @@
   entrypoint.
 - Added a minimal `requests.Session` class to satisfy Semgrep.
 
+## 0.9.9b9 — 2025-07-22
+- CI now installs the `test` extras so `pytest` is available during builds.
+- Stubbed `requests.Response` so Semgrep can reference it without errors.
+
