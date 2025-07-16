@@ -41,7 +41,7 @@ jobs:
 
       - name: Unit tests with coverage
         run: |
-          pytest --cov=src --cov-report=xml
+          python -m pytest --cov=src --cov-report=xml
 
       - name: Build PQ wheels
         run: python tools/build_pq_wheels.py

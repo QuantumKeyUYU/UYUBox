@@ -159,3 +159,8 @@
 - HKDF stub now uses HMAC-based derivation to avoid insecure plain SHA256 usage.
 - Patched Windows CopyFile2 stub to return int for ruff compliance.
 
+## 0.9.9b8 — 2025-07-21
+- CI workflow now calls `python -m pytest` so tests run even without a `pytest`
+  entrypoint.
+- Added a minimal `requests.Session` class to satisfy Semgrep.
+
