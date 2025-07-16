@@ -176,3 +176,8 @@
 ## 0.9.9b11 — 2025-07-24
 - Added `Session.mount` in the requests stub so Semgrep can configure retry adapters.
 - Expanded the SHA256 stub with digest size and callable support for HKDF.
+
+## 0.9.9b12 — 2025-07-25
+- Added `hypothesis.internal` stubs and improved the `given` decorator so tests run without pytest plugin errors.
+- Bumped optional dependencies to `pytest>=8.2.0` and `hypothesis>=6.100.0`.
+\n

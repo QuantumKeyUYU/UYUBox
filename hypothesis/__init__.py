@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from . import strategies as strategies
+import inspect
+import functools
+
+__version__ = "6.100.0"
 
 
 class HealthCheck:
@@ -16,14 +20,21 @@ def settings(**_kwargs):  # pragma: no cover - simplified
 
 def given(**kwargs):
     def decorator(fn):
-        def wrapper(*args, **_):
-            vals = {k: (v() if callable(v) else v) for k, v in kwargs.items()}
-            return fn(*args, **vals)
+        sig = inspect.signature(fn)
 
+        @functools.wraps(fn)
+        def wrapper(*args, **fkwargs):
+            for name, strat in kwargs.items():
+                fkwargs[name] = strat() if callable(strat) else strat
+            return fn(*args, **fkwargs)
+
+        wrapper.hypothesis_inner_test = fn
+        wrapper.is_hypothesis_test = True
+        wrapper.__signature__ = sig.replace(parameters=[p for p in sig.parameters.values() if p.name not in kwargs])
         return wrapper
 
     return decorator
 
 
 def is_hypothesis_test(obj) -> bool:  # pragma: no cover - minimal stub
-    return callable(obj)
+    return getattr(obj, "is_hypothesis_test", False)
