@@ -12,12 +12,13 @@ REPORT = Path("policy_report.md")
 
 
 def changed_files() -> list[str]:
-    proc = subprocess.run(
-        ["git", "diff", "--name-only", "origin/main...HEAD"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    """Return list of files changed from main or the previous commit."""
+    cmd = ["git", "diff", "--name-only", "origin/main...HEAD"]
+    chk = subprocess.run(["git", "rev-parse", "--verify", "origin/main"], capture_output=True, text=True)
+    if chk.returncode != 0:
+        # Fallback when remote is missing
+        cmd = ["git", "diff", "--name-only", "HEAD^..HEAD"]
+    proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
     return [f for f in proc.stdout.split() if f]
 
 
