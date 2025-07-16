@@ -149,3 +149,5 @@
 - Улучшен `policy_validator.py`: теперь корректно работает без удалённого репозитория.
 
 ---
+## 0.9.9b5 — 2025-07-18
+- Added local stubs for missing dependencies (argon2, flask, requests, hypothesis, filelock, cryptography components) so tests import modules without heavy packages.
