@@ -22,6 +22,10 @@ class Session:
     def __init__(self) -> None:
         pass
 
+    def mount(self, prefix: str, adapter) -> None:  # pragma: no cover - stub
+        """Attach an adapter to a prefix."""
+        return None
+
     def get(self, url: str, *args, **kwargs):
         return post(url, *args, **kwargs)
 

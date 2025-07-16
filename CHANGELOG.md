@@ -172,3 +172,7 @@
 - Added `requests.adapters.HTTPAdapter` and `hypothesis.is_hypothesis_test` stubs
   to fix Semgrep and pytest failures in CI.
 
+
+## 0.9.9b11 — 2025-07-24
+- Added `Session.mount` in the requests stub so Semgrep can configure retry adapters.
+- Expanded the SHA256 stub with digest size and callable support for HKDF.
