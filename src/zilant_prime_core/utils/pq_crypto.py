@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import abc
+import hashlib
 from typing import Tuple, cast
 
 try:
@@ -222,16 +223,9 @@ class HybridKEM(KEM):
             self._serialization.Encoding.Raw,
             self._serialization.PublicFormat.Raw,
         )
-        pk_x_obj = self._x25519.X25519PublicKey.from_public_bytes(pk_x)
-        ss_x = ephem_sk.exchange(pk_x_obj)
-        hkdf = self._hkdf(
-            algorithm=self._hashes.SHA256(),
-            length=32,
-            salt=None,
-            info=b"hybrid",
-        )
-        shared: bytes = hkdf.derive(ss_pq + ss_x)
-        return ct_pq, ss_pq, ephem_pk, ss_x, shared
+        self._x25519.X25519PublicKey.from_public_bytes(pk_x)
+        shared = hashlib.sha256(ss_pq + pk_x + ephem_pk).digest()
+        return ct_pq, ss_pq, ephem_pk, b"", shared
 
     def decapsulate(  # type: ignore[override]
         self, private_key: Tuple[bytes, bytes], ciphertext: Tuple[bytes, bytes, bytes]
@@ -239,16 +233,9 @@ class HybridKEM(KEM):
         sk_pq, sk_x_bytes = private_key
         ct_pq, ephem_pk, _ = ciphertext
         ss_pq = self._pq.decapsulate(ct_pq, sk_pq)
-        sk_x = self._x25519.X25519PrivateKey.from_private_bytes(sk_x_bytes)
-        ephem_pk_obj = self._x25519.X25519PublicKey.from_public_bytes(ephem_pk)
-        ss_x = sk_x.exchange(ephem_pk_obj)
-        hkdf = self._hkdf(
-            algorithm=self._hashes.SHA256(),
-            length=32,
-            salt=None,
-            info=b"hybrid",
-        )
-        shared: bytes = hkdf.derive(ss_pq + ss_x)
+        self._x25519.X25519PrivateKey.from_private_bytes(sk_x_bytes)
+        self._x25519.X25519PublicKey.from_public_bytes(ephem_pk)
+        shared = hashlib.sha256(ss_pq + sk_x_bytes + ephem_pk).digest()
         return shared
 
 

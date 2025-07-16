@@ -1,5 +1,5 @@
 class _Value:
-    def __init__(self):
+    def __init__(self) -> None:
         self._v = 0.0
 
     def inc(self, amount=1):
@@ -21,10 +21,13 @@ class _Timer:
 
     def __exit__(self, exc_type, exc, tb):
         self.metric.observe(0.0)
+        # Histogram count increments
+        self.metric.inc()
 
 
 class _Metric:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name: str, *args, **kwargs) -> None:
+        self._name = name
         self._value = _Value()
 
     def labels(self, *labels):
@@ -46,12 +49,25 @@ class _Metric:
         return _Timer(self)
 
     def collect(self):
-        Sample = type("Sample", (), {"name": "dummy_count", "value": float(self._value.get())})
+        Sample = type(
+            "Sample",
+            (),
+            {"name": f"{self._name}_count", "value": float(self._value.get())},
+        )
         Holder = type("Holder", (), {"samples": [Sample]})
         return [Holder]
 
 
-Counter = Gauge = Histogram = _Metric
+def Counter(name, *args, **kwargs):
+    return _Metric(name)
+
+
+def Gauge(name, *args, **kwargs):
+    return _Metric(name)
+
+
+def Histogram(name, *args, **kwargs):
+    return _Metric(name)
 
 
 def generate_latest():
