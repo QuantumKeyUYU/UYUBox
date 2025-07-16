@@ -154,3 +154,8 @@
 
 ## 0.9.9b6 — 2025-07-19
 - Fixed HybridKEM decapsulation argument order so tests pass under stubs
+
+## 0.9.9b7 — 2025-07-20
+- HKDF stub now uses HMAC-based derivation to avoid insecure plain SHA256 usage.
+- Patched Windows CopyFile2 stub to return int for ruff compliance.
+
