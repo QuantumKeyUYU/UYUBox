@@ -23,3 +23,7 @@ def given(**kwargs):
         return wrapper
 
     return decorator
+
+
+def is_hypothesis_test(obj) -> bool:  # pragma: no cover - minimal stub
+    return callable(obj)

@@ -29,5 +29,14 @@ class Session:
         return post(url, *args, **kwargs)
 
 
+class adapters:
+    class HTTPAdapter:
+        def __init__(self, *args, **kwargs) -> None:
+            pass
+
+        def send(self, request, **kwargs):  # pragma: no cover - minimal stub
+            return Response()
+
+
 def post(url: str, *args, **kwargs) -> Response:
     return Response()

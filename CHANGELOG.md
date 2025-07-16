@@ -168,3 +168,7 @@
 - CI now installs the `test` extras so `pytest` is available during builds.
 - Stubbed `requests.Response` so Semgrep can reference it without errors.
 
+## 0.9.9b10 — 2025-07-23
+- Added `requests.adapters.HTTPAdapter` and `hypothesis.is_hypothesis_test` stubs
+  to fix Semgrep and pytest failures in CI.
+
