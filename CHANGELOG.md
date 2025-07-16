@@ -151,3 +151,6 @@
 ---
 ## 0.9.9b5 — 2025-07-18
 - Added local stubs for missing dependencies (argon2, flask, requests, hypothesis, filelock, cryptography components) so tests import modules without heavy packages.
+
+## 0.9.9b6 — 2025-07-19
+- Fixed HybridKEM decapsulation argument order so tests pass under stubs
