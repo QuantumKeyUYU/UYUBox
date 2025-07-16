@@ -134,6 +134,10 @@ class PQAEAD:
 
         kem = Kyber768KEM()
         ct_len = kem.ciphertext_length()
+        min_len = ct_len + PQAEAD._NONCE_LEN + 1
+        if len(payload) < min_len:
+            raise ValueError("payload too short")
+
         kem_ct = payload[:ct_len]
         nonce = payload[ct_len : ct_len + PQAEAD._NONCE_LEN]
         ct = payload[ct_len + PQAEAD._NONCE_LEN :]

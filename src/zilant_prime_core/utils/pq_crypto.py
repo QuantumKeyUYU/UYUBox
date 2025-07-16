@@ -238,7 +238,7 @@ class HybridKEM(KEM):
     ) -> bytes:
         sk_pq, sk_x_bytes = private_key
         ct_pq, ephem_pk, _ = ciphertext
-        ss_pq = self._pq.decapsulate(sk_pq, ct_pq)
+        ss_pq = self._pq.decapsulate(ct_pq, sk_pq)
         sk_x = self._x25519.X25519PrivateKey.from_private_bytes(sk_x_bytes)
         ephem_pk_obj = self._x25519.X25519PublicKey.from_public_bytes(ephem_pk)
         ss_x = sk_x.exchange(ephem_pk_obj)

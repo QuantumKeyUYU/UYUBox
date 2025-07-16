@@ -24,6 +24,12 @@ class Flask:
         app = self
 
         class Client:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
             def get(self, path: str):
                 func = app._routes[path.split("?")[0]]
                 return func()

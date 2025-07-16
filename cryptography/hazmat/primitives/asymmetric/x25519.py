@@ -18,7 +18,8 @@ class X25519PrivateKey:
         return X25519PublicKey(self._key)
 
     def exchange(self, peer: "X25519PublicKey") -> bytes:
-        return hashlib.sha256(self._key + peer._key).digest()
+        xored = bytes(a ^ b for a, b in zip(self._key, peer._key, strict=True))
+        return hashlib.sha256(xored).digest()
 
     def private_bytes(self, *args, **kwargs) -> bytes:
         return self._key
