@@ -9,6 +9,11 @@
 
 from __future__ import annotations
 
+import pathlib
+
+# On Linux pytest may incorrectly use WindowsPath; force PosixPath.
+pathlib.Path = pathlib.PosixPath
+
 import os
 import re
 import sys
