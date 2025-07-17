@@ -18,5 +18,5 @@ def hash_secret_raw(
     type: Any,
 ) -> bytes:
     """Derive a key using a simplified PBKDF2 stand-in."""
-    rounds = max(1, time_cost) * 5000
+    rounds = max(1, time_cost) * (5000 + memory_cost // 1024)
     return hashlib.pbkdf2_hmac("sha256", secret, salt, rounds, dklen=hash_len)

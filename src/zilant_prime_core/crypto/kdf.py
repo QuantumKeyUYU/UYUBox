@@ -79,7 +79,8 @@ def derive_key_dynamic(
     angle = abs(G_new(profile))  # ∈ [0, 1.5]
     norm = min(max(angle / 1.5, 0.0), 1.0)
 
-    time_cost = 1 + int(norm * (time_max - 1))
+    # round to better differentiate nearby profiles
+    time_cost = max(1, round(norm * time_max))
     memory_cost = mem_min + int(norm * (mem_max - mem_min))
 
     if isinstance(password, str):

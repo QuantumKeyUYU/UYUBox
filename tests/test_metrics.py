@@ -7,6 +7,7 @@ from zilant_prime_core.metrics import metrics
 
 
 def test_metrics_track():
+    metrics.reset()
     with metrics.track("test"):
         time.sleep(0.01)
     metrics.files_processed_total.inc()

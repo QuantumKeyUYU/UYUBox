@@ -22,7 +22,9 @@ class Ed25519PrivateKey:
         return Ed25519PublicKey(self._key)
 
     def sign(self, data: bytes) -> bytes:
-        return hmac.new(self._key, data, hashlib.sha256).digest()
+        digest = hmac.new(self._key, data, hashlib.sha256).digest()
+        # Expand to 64 bytes to mimic real Ed25519 signature length
+        return digest + digest
 
     def private_bytes(self, *, encoding, format, encryption_algorithm) -> bytes:
         return self._key

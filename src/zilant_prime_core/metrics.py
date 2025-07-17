@@ -13,7 +13,10 @@ __all__ = ["metrics", "Metrics"]
 
 class Metrics:
     def __init__(self) -> None:
-        self.requests_total: Counter = Counter("requests_total", "Total processed requests", ["name"])
+        self._init_metrics()
+
+    def _init_metrics(self) -> None:
+        self.requests_total = Counter("requests_total", "Total processed requests", ["name"])
         self.request_duration_seconds: Histogram = Histogram(
             "request_duration_seconds",
             "Request duration in seconds",
@@ -34,6 +37,13 @@ class Metrics:
             "Time spent encrypting/decrypting",
         )
         self.inflight_requests: Gauge = Gauge("inflight_requests", "In-flight requests", ["name"])
+
+    def reset(self) -> None:
+        """Reset all counters to their initial state."""
+        from prometheus_client import CollectorRegistry
+
+        CollectorRegistry().clear()
+        self._init_metrics()
 
     @contextmanager
     def track(self, name: str) -> Iterator[None]:

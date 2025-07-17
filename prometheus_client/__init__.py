@@ -77,3 +77,8 @@ def generate_latest():
         "command_duration_seconds_bucket",
     ]
     return ("\n".join(names) + "\n").encode()
+
+
+class CollectorRegistry:
+    def clear(self) -> None:
+        pass
