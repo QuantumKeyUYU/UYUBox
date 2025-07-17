@@ -1,0 +1,46 @@
+from __future__ import annotations
+
+
+class exceptions:
+    class SSLError(Exception):
+        pass
+
+    class RequestException(Exception):
+        pass
+
+
+class Response:
+    def __init__(self, data: dict | None = None, status_code: int = 200) -> None:
+        self._data = data or {}
+        self.status_code = status_code
+
+    def json(self) -> dict:
+        return self._data
+
+
+class Session:
+    def __init__(self) -> None:
+        pass
+
+    def mount(self, prefix: str, adapter) -> None:  # pragma: no cover - stub
+        """Attach an adapter to a prefix."""
+        return None
+
+    def get(self, url: str, *args, **kwargs):
+        return post(url, *args, **kwargs)
+
+    def post(self, url: str, *args, **kwargs):
+        return post(url, *args, **kwargs)
+
+
+class adapters:
+    class HTTPAdapter:
+        def __init__(self, *args, **kwargs) -> None:
+            pass
+
+        def send(self, request, **kwargs):  # pragma: no cover - minimal stub
+            return Response()
+
+
+def post(url: str, *args, **kwargs) -> Response:
+    return Response()

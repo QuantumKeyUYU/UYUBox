@@ -9,6 +9,13 @@
 
 from __future__ import annotations
 
+import pathlib
+
+# On Linux pytest can try to instantiate WindowsPath and fail with
+# NotImplementedError. Replace WindowsPath with PosixPath while leaving
+# pathlib.Path intact.
+pathlib.WindowsPath = pathlib.PosixPath
+
 import os
 import re
 import sys

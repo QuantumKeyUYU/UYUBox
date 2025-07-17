@@ -61,7 +61,11 @@ def test_sweep_expired_decoys_handles_file_disappear(monkeypatch):
         dest_dir = Path(td)
         decoy_gen.generate_decoy_file(dest_dir / "boom.zil", expire_seconds=-1)
 
-        def fake_stat(self):
+        orig_stat = Path.stat
+
+        def fake_stat(self, *args, **kwargs):
+            if os.path.isdir(self):
+                return orig_stat(self, *args, **kwargs)
             os.unlink(self)
             raise FileNotFoundError
 

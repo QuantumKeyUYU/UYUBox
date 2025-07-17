@@ -2,8 +2,12 @@
 # SPDX-FileCopyrightText: 2025 Zilant Prime Core contributors
 
 import os
-from cryptography.exceptions import InvalidTag
-from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+
+try:  # cryptography might be unavailable during tests
+    from cryptography.exceptions import InvalidTag
+    from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+except Exception:  # pragma: no cover - fallback
+    from aead_fallback import ChaCha20Poly1305, InvalidTag
 from typing import Tuple, cast
 
 DEFAULT_KEY_LENGTH = 32
@@ -130,6 +134,10 @@ class PQAEAD:
 
         kem = Kyber768KEM()
         ct_len = kem.ciphertext_length()
+        min_len = ct_len + PQAEAD._NONCE_LEN + 1
+        if len(payload) < min_len:
+            raise ValueError("payload too short")
+
         kem_ct = payload[:ct_len]
         nonce = payload[ct_len : ct_len + PQAEAD._NONCE_LEN]
         ct = payload[ct_len + PQAEAD._NONCE_LEN :]

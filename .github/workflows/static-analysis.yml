@@ -25,7 +25,3 @@ jobs:
             p/python
             ./.semgrep.yml
             ./.semgrep/custom
-          generateSarif: true
-          publishSarif: true
-          comment: true
-          autofix: true

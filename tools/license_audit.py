@@ -47,10 +47,12 @@ def load_deps() -> dict[str, str]:
     for f in REQ_FILES:
         p = Path(f)
         if p.exists():
-            for req in parse_requirements(p.read_text()):
+            text = p.read_text(encoding="utf-8", errors="ignore")
+            for req in parse_requirements(text):
                 deps[req.name] = str(req.specifier)
     if PYPROJECT.exists():
-        data = tomli.loads(PYPROJECT.read_text())
+        text = PYPROJECT.read_text(encoding="utf-8", errors="ignore")
+        data = tomli.loads(text)
         project = data.get("project", {})
         for dep in project.get("dependencies", []):
             req = Requirement(dep)
