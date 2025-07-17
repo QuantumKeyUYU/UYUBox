@@ -38,3 +38,10 @@ def given(**kwargs):
 
 def is_hypothesis_test(obj) -> bool:  # pragma: no cover - minimal stub
     return getattr(obj, "is_hypothesis_test", False)
+
+
+# Minimal core namespace expected by pytest plugin
+class core:
+    given = given
+    settings = settings
+    HealthCheck = HealthCheck

@@ -1,1 +1,1 @@
-"""Minimal internal helpers for Hypothesis stub."""
+# minimal package for pytest plugin compatibility

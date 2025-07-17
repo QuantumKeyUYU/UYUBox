@@ -1,16 +1,19 @@
 from __future__ import annotations
 
 
-def binary(min_size: int = 0, max_size: int = 64):
-    def gen():
-        size = max(min_size, 1)
-        return b"0" * size
+def integers(min_value=0, max_value=100):
+    def strat():
+        return min_value
 
-    return gen
+    return strat
 
 
-def integers(min_value: int = 0, max_value: int = 100):
-    def gen() -> int:
-        return max(min_value, 0)
+def text():
+    return "example"
 
-    return gen
+
+def binary(min_size=0, max_size=10):
+    def strat():
+        return b"\x00" * max(min_size, 1)
+
+    return strat

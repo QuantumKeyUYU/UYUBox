@@ -12,3 +12,16 @@ __all__ = [
     "verify_landscape",
     "VDFVerificationError",
 ]
+from .vdf import generate_posw_sha256, verify_posw_sha256
+
+
+def posw(seed: bytes, steps: int = 1):
+    proof = generate_posw_sha256(seed, steps)
+    return proof, True
+
+
+def check_posw(proof: bytes, seed: bytes, steps: int = 1) -> bool:
+    return verify_posw_sha256(seed, proof, steps)
+
+
+__all__ += ["posw", "check_posw"]
