@@ -15,7 +15,7 @@ __all__ = [
 from .vdf import generate_posw_sha256, verify_posw_sha256
 
 
-def posw(seed: bytes, steps: int = 1):
+def posw(seed: bytes, steps: int = 1) -> tuple[bytes, bool]:
     proof = generate_posw_sha256(seed, steps)
     return proof, True
 
