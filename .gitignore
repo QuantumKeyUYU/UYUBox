@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.o
+*.log
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+.env/
+
+# Buildozer & build artifacts
+.buildozer/
+bin/
+build/
+dist/
+*.apk
+*.aab
+
+# OS/filesystem
+*.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Misc
+.zilant_log*
