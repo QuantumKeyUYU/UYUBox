@@ -8,61 +8,64 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 60
 
     env:
-      SDK_ROOT: ${{ github.workspace }}/.buildozer/android/platform/android-sdk
+      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
+      # ИСПРАВЛЕНИЕ: Используем NDK версии r25c
+      ANDROID_NDK_ROOT: ${{ github.workspace }}/android-ndk-r25c
 
     steps:
-    # ──────────────────────────────────────────────────────────────────────
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    # ──────────────────────────────────────────────────────────────────────
-    # Базовые system deps для p4a/Buildozer
-    - name: Install system deps
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Install system dependencies
       run: |
         sudo apt-get update -yq
-        sudo apt-get install -yq openjdk-17-jdk unzip autoconf automake \
-             libtool pkg-config zlib1g-dev
+        sudo apt-get install -yq autoconf automake libtool pkg-config zlib1g-dev \
+             libncurses5-dev libffi-dev libssl-dev libsqlite3-dev unzip
 
-    # Python 3.10 (p4a пока дружит лучше всего)
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
-    # ──────────────────────────────────────────────────────────────────────
-    # ⚠️ Готовим SDK/NDK + принимаем лицензии *до* Buildozer
-    - name: Install cmdline-tools + accept licences + pin SDK pkgs
+    - name: Install Android SDK and Command-line Tools
       run: |
-        mkdir -p "$SDK_ROOT"
-        curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmd.zip
-        unzip -q /tmp/cmd.zip -d "$SDK_ROOT/"
-        mkdir -p "$SDK_ROOT/cmdline-tools/latest"
-        mv "$SDK_ROOT/cmdline-tools"/* "$SDK_ROOT/cmdline-tools/latest/"
+        mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools"
+        curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmdline-tools.zip
+        unzip -q /tmp/cmdline-tools.zip -d /tmp/
+        mv /tmp/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest"
+        (yes || true) | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+        (yes || true) | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --sdk_root="${ANDROID_SDK_ROOT}" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
 
-        yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses
-        yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
-              "platform-tools" \
-              "platforms;android-34" \
-              "build-tools;34.0.0"
+    # ИСПРАВЛЕНИЕ: Скачиваем архив для NDK r25c
+    - name: Install Android NDK
+      run: |
+        curl -sSL https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -o /tmp/ndk.zip
+        unzip -q /tmp/ndk.zip -d /tmp/ndk-contents
+        mv /tmp/ndk-contents/android-ndk-r25c "${ANDROID_NDK_ROOT}"
+        rm -rf /tmp/ndk.zip /tmp/ndk-contents
 
-    # ──────────────────────────────────────────────────────────────────────
-    - name: Install Buildozer
+    - name: Install Buildozer and dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install buildozer cython==0.29.36
+        python -m pip install "cython<3.0" buildozer
 
-    # ──────────────────────────────────────────────────────────────────────
-    - name: Build debug APK
+    - name: Build debug APK with Buildozer
       run: |
         buildozer -v android debug
 
-    # ──────────────────────────────────────────────────────────────────────
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: zilantmobile-debug
         path: bin/*.apk
+        
