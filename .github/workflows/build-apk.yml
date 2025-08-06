@@ -14,7 +14,6 @@ jobs:
     env:
       # Пути вынесены за пределы папки проекта
       ANDROID_SDK_ROOT: /home/runner/android-sdk
-      # Используем современную, требуемую версию NDK
       ANDROID_NDK_ROOT: /home/runner/android-ndk-r25c
 
     steps:
