@@ -1,3 +1,4 @@
+# .github/workflows/build-apk.yml
 name: Build Android APK
 
 on:
@@ -10,11 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Клонируем репозиторий
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2) Системные пакеты для Buildozer и Android SDK
       - name: Install system deps
         run: |
           sudo apt update
@@ -23,14 +22,11 @@ jobs:
             build-essential git zip unzip \
             zlib1g-dev libffi-dev libssl-dev
 
-      # 3) Устанавливаем Buildozer и Cython
       - name: Setup Python & Buildozer
         run: |
           python3 -m pip install --upgrade pip setuptools
           pip install buildozer cython
 
-      # 4) Устанавливаем зависимости приложения:
-      #    Kivy, KivyMD, Argon2, Cryptography и ваш zilant-prime-core из GitHub
       - name: Install app dependencies
         run: |
           pip install \
@@ -38,14 +34,12 @@ jobs:
             kivymd>=1.2.0 \
             argon2-cffi>=23.1.0 \
             cryptography>=42.0.0 \
-            git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.7.0
+            git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
 
-      # 5) Собираем debug-APK
       - name: Build debug APK
         run: |
           buildozer -v android debug
 
-      # 6) Загружаем артефакт
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
