@@ -2,7 +2,8 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -10,8 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: kivy/buildozer:latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -24,11 +27,10 @@ jobs:
           pip install buildozer cibuildwheel
 
       - name: Build debug APK
-        run: |
-          buildozer android debug
+        run: buildozer -v android debug
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ZilantMobile-debug
           path: bin/*.apk
