@@ -12,9 +12,10 @@ jobs:
     timeout-minutes: 60
 
     env:
-      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
-      # ❗️ ИСПОЛЬЗУЕМ СУПЕР-СТАБИЛЬНУЮ ВЕРСИЮ NDK
-      ANDROID_NDK_ROOT: ${{ github.workspace }}/android-ndk-r23c
+      # Пути вынесены за пределы папки проекта, чтобы сборщик их не трогал
+      ANDROID_SDK_ROOT: /home/runner/android-sdk
+      # ❗️ ВОЗВРАЩАЕМ РЕКОМЕНДУЕМУЮ ВЕРСИЮ NDK
+      ANDROID_NDK_ROOT: /home/runner/android-ndk-r25c
 
     steps:
     - name: Checkout repo
@@ -46,12 +47,12 @@ jobs:
         (yes || true) | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
         (yes || true) | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --sdk_root="${ANDROID_SDK_ROOT}" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
 
-    # ❗️ СКАЧИВАЕМ СТАБИЛЬНЫЙ NDK r23c
+    # ❗️ СКАЧИВАЕМ РЕКОМЕНДУЕМЫЙ NDK r25c
     - name: Install Android NDK
       run: |
-        curl -sSL https://dl.google.com/android/repository/android-ndk-r23c-linux.zip -o /tmp/ndk.zip
+        curl -sSL https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -o /tmp/ndk.zip
         unzip -q /tmp/ndk.zip -d /tmp/ndk-contents
-        mv /tmp/ndk-contents/android-ndk-r23c "${ANDROID_NDK_ROOT}"
+        mv /tmp/ndk-contents/android-ndk-r25c "${ANDROID_NDK_ROOT}"
         rm -rf /tmp/ndk.zip /tmp/ndk-contents
 
     - name: Install Buildozer and dependencies
@@ -68,4 +69,3 @@ jobs:
       with:
         name: zilantmobile-debug
         path: bin/*.apk
-        

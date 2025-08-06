@@ -15,8 +15,9 @@ fullscreen = 0
 # -----------------------------------------------------------------------------
 # ЗАВИСИМОСТИ PYTHON
 # -----------------------------------------------------------------------------
-# Версии зафиксированы для стабильной сборки.
+# Версии зафиксированы для стабильной сборки, host_cffi на месте.
 requirements = \
+    host_cffi,\
     kivy==2.3.0,\
     kivymd==1.2.0,\
     cryptography==41.0.7,\
@@ -36,7 +37,7 @@ android.permissions = READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 android.api = 34
 android.minapi = 21
 android.build_tools_version = 34.0.0
-# ИСПРАВЛЕНИЕ: Используем NDK версии r25c, чтобы избежать ошибки SyntaxError
+# ❗️ ВОЗВРАЩАЕМ РЕКОМЕНДУЕМУЮ ВЕРСИЮ NDK
 android.ndk = 25c
 android.accept_sdk_license = True
 arch = arm64-v8a, armeabi-v7a
