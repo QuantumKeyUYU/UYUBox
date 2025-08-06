@@ -2,47 +2,67 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    env:
+      SDK_ROOT: ${{ github.workspace }}/.buildozer/android/platform/android-sdk
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    # ──────────────────────────────────────────────────────────────────────
+    - name: Checkout repo
+      uses: actions/checkout@v4
 
-      - name: Install system deps
-        run: |
-          sudo apt update
-          sudo apt install -y \
-            python3-pip python3-venv python3-dev python3-distutils \
-            default-jdk build-essential git zip unzip \
-            zlib1g-dev libffi-dev libssl-dev \
-            libgl1-mesa-dev libgles2-mesa-dev libglu1-mesa-dev \
-            libncurses5 pkg-config
+    # ──────────────────────────────────────────────────────────────────────
+    # Базовые system deps для p4a/Buildozer
+    - name: Install system deps
+      run: |
+        sudo apt-get update -yq
+        sudo apt-get install -yq openjdk-17-jdk unzip autoconf automake \
+             libtool pkg-config zlib1g-dev
 
-      - name: Setup Python & Buildozer
-        run: |
-          python3 -m pip install --upgrade pip setuptools
-          pip install buildozer cython
+    # Python 3.10 (p4a пока дружит лучше всего)
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-      - name: Install app dependencies
-        run: |
-          pip install \
-            kivy>=2.2.0 \
-            kivymd>=1.2.0 \
-            argon2-cffi>=23.1.0 \
-            cryptography>=42.0.0 \
-            git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
+    # ──────────────────────────────────────────────────────────────────────
+    # ⚠️ Готовим SDK/NDK + принимаем лицензии *до* Buildozer
+    - name: Install cmdline-tools + accept licences + pin SDK pkgs
+      run: |
+        mkdir -p "$SDK_ROOT"
+        curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmd.zip
+        unzip -q /tmp/cmd.zip -d "$SDK_ROOT/"
+        mkdir -p "$SDK_ROOT/cmdline-tools/latest"
+        mv "$SDK_ROOT/cmdline-tools"/* "$SDK_ROOT/cmdline-tools/latest/"
 
-      - name: Build debug APK
-        run: |
-          buildozer -v android debug
+        yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses
+        yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+              "platform-tools" \
+              "platforms;android-34" \
+              "build-tools;34.0.0"
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ZilantMobile-debug
-          path: bin/*.apk
+    # ──────────────────────────────────────────────────────────────────────
+    - name: Install Buildozer
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install buildozer cython==0.29.36
+
+    # ──────────────────────────────────────────────────────────────────────
+    - name: Build debug APK
+      run: |
+        buildozer -v android debug
+
+    # ──────────────────────────────────────────────────────────────────────
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: zilantmobile-debug
+        path: bin/*.apk
