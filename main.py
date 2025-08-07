@@ -19,6 +19,7 @@ from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.toolbar import MDToolbar
+from kivymd.uix.spinner import MDSpinner
 
 # Импортируем функции упаковки и распаковки из zilant-prime-core.
 try:
@@ -150,12 +151,15 @@ class ZilantMobileApp(MDApp):
 
     def _thread_pack(self, password: str, output_name: str) -> None:
         """Запускает упаковку в отдельном потоке."""
-        if self.dialog: self.dialog.dismiss()
+        if self.dialog:
+            self.dialog.dismiss()
+        self._show_loading("Упаковка...")
         threading.Thread(target=self.do_pack, args=(password, output_name)).start()
 
     def do_pack(self, password: str, output_name: str) -> None:
         """Выполняет упаковку файла в .zil контейнер."""
         if pack_file is None:
+            self._hide_loading()
             self._show_message("Модуль zilant-prime-core не найден.")
             return
         try:
@@ -168,8 +172,10 @@ class ZilantMobileApp(MDApp):
             out_path = in_path.parent / out_name
             meta = {"salt_hex": salt.hex(), "filename": in_path.name}
             pack_file(in_path, out_path, key, extra_meta=meta)
+            self._hide_loading()
             self._show_message(f"Упаковано: {out_path}")
         except Exception as exc:
+            self._hide_loading()
             self._show_message(f"Ошибка упаковки: {exc}")
 
     def _show_unpack_dialog(self) -> None:
@@ -195,12 +201,15 @@ class ZilantMobileApp(MDApp):
         self.dialog.open()
 
     def _thread_unpack(self, password: str, output_name: str) -> None:
-        if self.dialog: self.dialog.dismiss()
+        if self.dialog:
+            self.dialog.dismiss()
+        self._show_loading("Распаковка...")
         threading.Thread(target=self.do_unpack, args=(password, output_name)).start()
 
     def do_unpack(self, password: str, output_name: str) -> None:
         """Выполняет распаковку контейнера."""
         if unpack_file is None:
+            self._hide_loading()
             self._show_message("Модуль zilant-prime-core не найден.")
             return
         try:
@@ -213,8 +222,10 @@ class ZilantMobileApp(MDApp):
             out_name = output_name or meta.get("filename", in_path.stem)
             out_path = in_path.parent / out_name
             unpack_file(in_path, out_path, key)
+            self._hide_loading()
             self._show_message(f"Распаковано: {out_path}")
         except Exception as exc:
+            self._hide_loading()
             self._show_message(f"Ошибка распаковки: {exc}")
 
     def _show_meta_dialog(self) -> None:
@@ -230,6 +241,26 @@ class ZilantMobileApp(MDApp):
             buttons=[MDFlatButton(text="OK", on_release=lambda _: self.dialog.dismiss())],
         )
         self.dialog.open()
+
+    @mainthread
+    def _show_loading(self, message: str) -> None:
+        """Показывает диалог с индикатором загрузки."""
+        if self.dialog:
+            self.dialog.dismiss()
+        box = MDBoxLayout(orientation="vertical", spacing=dp(10), padding=dp(20))
+        spinner = MDSpinner(size_hint=(None, None), size=(dp(46), dp(46)), pos_hint={"center_x": 0.5})
+        box.add_widget(spinner)
+        spinner.active = True
+        box.add_widget(MDLabel(text=message, halign="center"))
+        self.dialog = MDDialog(type="custom", content_cls=box)
+        self.dialog.open()
+
+    @mainthread
+    def _hide_loading(self) -> None:
+        """Закрывает диалог загрузки, если он открыт."""
+        if self.dialog:
+            self.dialog.dismiss()
+            self.dialog = None
 
     @mainthread
     def _show_message(self, message: str) -> None:
