@@ -16,13 +16,14 @@ fullscreen = 0
 # ЗАВИСИМОСТИ PYTHON
 # -----------------------------------------------------------------------------
 # Версии зафиксированы для стабильной сборки.
-requirements = \
-    kivy==2.3.0,\
-    kivymd==1.2.0,\
-    cryptography==41.0.7,\
-    argon2-cffi==23.1.0,\
-    cffi==1.16.0,\
-    git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
+  requirements = \
+      kivy==2.3.0,\
+      kivymd==1.2.0,\
+      cryptography==41.0.7,\
+      argon2-cffi==23.1.0,\
+      cffi==1.16.0,\
+      android,\
+      git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
 
 # -----------------------------------------------------------------------------
 # РАЗРЕШЕНИЯ ANDROID

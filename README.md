@@ -36,8 +36,9 @@ kivy>=2.2.0
 kivymd>=1.2.0
 argon2-cffi>=23.1.0
 cryptography>=42.0.0
+android
 zilant-prime-core>=0.7.0
-``` 
+```
 
 Эти библиотеки устанавливаются автоматически при сборке APK через Buildozer. На обычном компьютере для разработки вы можете установить их вручную: `pip install -r requirements.txt`.
 
@@ -46,7 +47,7 @@ zilant-prime-core>=0.7.0
 Определяет конфигурацию Buildozer. Важные параметры:
 
 * **title/package.name/package.domain** — идентификаторы приложения; их можно менять, но придерживайтесь обратной записи домена.
-* **requirements** — список библиотек, которые следует включить в APK (включая Python версии, Kivy, KivyMD, argon2‑cffi, cryptography и сам `zilant-prime-core`).
+* **requirements** — список библиотек, которые следует включить в APK (включая Python‑версию, Kivy, KivyMD, argon2‑cffi, cryptography, android и сам `zilant-prime-core`).
 * **android.permissions** — только необходимые разрешения чтения/записи внешнего хранилища. Уберите лишние разрешения, если они вам не нужны.
 * **android.proguard** и `android.add_proguard_rules` — включают обфускацию, сокращение кода и подгружают дополнительные правила из файла `proguard-rules.pro`.
 * **android.release** — по умолчанию `False`. Для генерации release‑сборки измените на `True` и подпишите APK вручную.
