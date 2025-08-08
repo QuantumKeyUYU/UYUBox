@@ -9,18 +9,6 @@ jobs:
   debug-apk:
     runs-on: ubuntu-22.04
 
-    env:
-      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-      ANDROID_HOME: /usr/local/lib/android/sdk
-      ANDROIDSDK: /usr/local/lib/android/sdk
-      # p4a ожидает именно этот NDK 25.2
-      ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/25.2.9519653
-      ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/25.2.9519653
-      ANDROIDNDK: /usr/local/lib/android/sdk/ndk/25.2.9519653
-      # для Buildozer
-      LC_ALL: C.UTF-8
-      LANG: C.UTF-8
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,52 +16,64 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Set up Java (JDK 17)
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: "17"
 
+      # Устанавливаем buildozer + p4a. buildozer==1.6.0 НЕ существует.
       - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade Cython wheel build
-          pip install --upgrade buildozer==1.6.0 python-for-android==2024.06.02
+          # можно взять стабильный релиз:
+          pip install "buildozer==1.5.0" "python-for-android==2024.06.02"
+          # либо последний мастер buildozer:
+          # pip install git+https://github.com/kivy/buildozer.git
+          # Опционально ускоряем компиляцию
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libffi-dev
 
+      # Ставим Android SDK components, чтобы были aapt/aidl и нужные build-tools
       - name: Install Android SDK cmdline-tools
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
         run: |
-          sudo mkdir -p $ANDROID_SDK_ROOT
-          sudo chown -R $USER:$USER $ANDROID_SDK_ROOT
-          mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
-          curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-6514233_latest.zip -o /tmp/cmdline-tools.zip
-          unzip -q /tmp/cmdline-tools.zip -d "$ANDROID_SDK_ROOT/cmdline-tools"
-          mv "$ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools" "$ANDROID_SDK_ROOT/cmdline-tools/latest"
-          echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "$ANDROID_SDK_ROOT/platform-tools" >> $GITHUB_PATH
+          yes | sudo /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+          /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" \
+            "build-tools;34.0.0" \
+            "platforms;android-33" \
+            "cmdline-tools;latest"
 
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses
-
-      - name: Install Android packages (SDK/NDK/Build Tools)
-        run: |
-          sdkmanager "platform-tools" "platforms;android-33"
-          sdkmanager "build-tools;30.0.3"
-          sdkmanager "ndk;25.2.9519653"
-          sdkmanager --list | head -n 50
-          # Проверка наличия aidl
-          test -x "$ANDROID_SDK_ROOT/build-tools/30.0.3/aidl"
+      - name: Cache .buildozer & .gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.buildozer
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
 
       - name: Build debug APK
+        env:
+          # Явно фиксируем API NDK, чтобы соответствовало spec
+          P4A_ndk_api: "24"
+          # rust для cryptography не обязателен, мы используем старую версию + openssl
+          # CRYPTOGRAPHY_DONT_BUILD_RUST: "1"
         run: |
-          # Чистим кэш от предыдущих несовместимых сборок
-          rm -rf .buildozer
+          # buildozer сам подтащит Android SDK/NDK локально, но у нас уже стоит системный
           buildozer android debug
-        timeout-minutes: 60
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: .buildozer/android/bin/*.apk
+          name: app-debug-apk
+          path: bin/*.apk
