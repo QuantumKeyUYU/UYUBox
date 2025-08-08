@@ -9,7 +9,6 @@ from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 
-# Не грузим тяжёлые части ядра заранее
 try:
     from zilant_prime_core.crypto import derive_key
     from zilant_prime_core.container import read_metadata
@@ -79,5 +78,4 @@ if __name__ == "__main__":
         request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
     except Exception:
         pass
-
     ZilantPrimeApp().run()

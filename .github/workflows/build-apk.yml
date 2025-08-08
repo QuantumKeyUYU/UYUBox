@@ -37,25 +37,27 @@ jobs:
           python -m pip install --upgrade pip
           pip install cython buildozer
 
-      # ---- ANDROID SDK / NDK ----
+      # --- ANDROID SDK/NDK ---
       - name: Install Android SDK cmdline-tools
         uses: android-actions/setup-android@v3
 
-      - name: Install SDK packages
+      - name: Install SDK packages (platforms, build-tools, NDK)
         run: |
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" \
                      "platforms;android-33" \
                      "build-tools;33.0.2" \
                      "ndk;25.2.9519653"
-          # p4a ищет cmdline-tools/latest; создаём "latest" -> 16.0
+          # p4a ищет cmdline-tools/latest — делаем явную ссылку
           CT_DIR="$ANDROID_SDK_ROOT/cmdline-tools"
-          if [ -d "$CT_DIR" ] && [ -d "$CT_DIR/16.0" ]; then
+          if [ -d "$CT_DIR/16.0" ]; then
             rm -rf "$CT_DIR/latest"
             ln -s "$CT_DIR/16.0" "$CT_DIR/latest"
           fi
+          # вырубаем древний tools/, чтобы p4a не дергал JAXB-сломанный sdkmanager
+          sudo rm -rf "$ANDROID_SDK_ROOT/tools" || true
 
-      - name: Add Android tools to PATH (no legacy tools/bin)
+      - name: PATH for Android (no legacy tools/bin)
         run: |
           echo "$ANDROID_SDK_ROOT/platform-tools" >> $GITHUB_PATH
           echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> $GITHUB_PATH
@@ -84,6 +86,8 @@ jobs:
           ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/25.2.9519653
           ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/25.2.9519653
           ANDROIDNDK: /usr/local/lib/android/sdk/ndk/25.2.9519653
+          # принудительно говорим p4a какой sdkmanager использовать
+          P4A_SDKMANAGER: /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager
         run: |
           echo "SDK: $ANDROID_SDK_ROOT"
           echo "NDK: $ANDROID_NDK_ROOT"
