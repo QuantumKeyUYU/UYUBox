@@ -45,7 +45,7 @@ jobs:
         run: |
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;25.2.9519653"
-          # делаем alias: tools/bin/sdkmanager -> cmdline-tools/latest/bin/sdkmanager
+          # alias: tools/bin/sdkmanager -> cmdline-tools/latest/bin/sdkmanager
           CT="$ANDROID_SDK_ROOT/cmdline-tools"
           if [ -d "$CT/16.0" ] && [ ! -d "$CT/latest" ]; then ln -s "$CT/16.0" "$CT/latest"; fi
           mkdir -p "$ANDROID_SDK_ROOT/tools/bin"
