@@ -9,16 +9,14 @@ from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 
-# Убираем импорт ядра отсюда, чтобы не падало при старте
-
-# Эти функции можно оставить, так как они не тянут тяжёлые зависимости
+# Без раннего импорта тяжёлых модулей ядра
 try:
     from zilant_prime_core.crypto import derive_key
     from zilant_prime_core.container import read_metadata
 except Exception as e:
     derive_key = None
     read_metadata = None
-    print(f"[WARN] Ядро (crypto/container) не загрузилось: {e}")
+    print(f"[WARN] ядро (crypto/container) не загрузилось на старте: {e}")
 
 class FileChooserScreen(Screen):
     pass
@@ -26,11 +24,10 @@ class FileChooserScreen(Screen):
 class MainScreen(Screen):
     def do_pack(self, password: str, output_name: str) -> None:
         try:
-            from zilant_prime_core.container import pack_file
+            from zilant_prime_core.container import pack_file  # lazy import
         except Exception as e:
             self._show_message(f"Ошибка загрузки ядра: {e}")
             return
-
         try:
             pack_file(self.ids.file_path.text, password, output_name)
             self._show_message("Файл успешно упакован.")
@@ -39,11 +36,10 @@ class MainScreen(Screen):
 
     def do_unpack(self, password: str, output_name: str) -> None:
         try:
-            from zilant_prime_core.container import unpack_file
+            from zilant_prime_core.container import unpack_file  # lazy import
         except Exception as e:
             self._show_message(f"Ошибка загрузки ядра: {e}")
             return
-
         try:
             unpack_file(self.ids.file_path.text, password, output_name)
             self._show_message("Файл успешно распакован.")
@@ -72,14 +68,13 @@ class ZilantPrimeApp(MDApp):
     def build(self):
         self.title = "Zilant Prime Mobile"
         Window.size = (360, 640)
-
         sm = ScreenManager()
         sm.add_widget(MainScreen(name="main"))
         sm.add_widget(FileChooserScreen(name="filechooser"))
         return sm
 
 if __name__ == "__main__":
-    # Разрешения для Android
+    # Разрешения (на реальном устройстве)
     try:
         from android.permissions import request_permissions, Permission
         request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
