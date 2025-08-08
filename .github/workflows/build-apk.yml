@@ -31,14 +31,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential zip unzip \
               zlib1g-dev libncurses5 libffi-dev libssl-dev libsqlite3-dev \
-              libbz2-dev libreadline-dev
+              libbz2-dev libreadline-dev git
 
       - name: Install Buildozer
         run: |
           python -m pip install --upgrade pip
           pip install cython buildozer
 
-      # ==== СТАВИМ ANDROID SDK/NDK ====
+      # ==== ANDROID SDK/NDK ====
       - name: Install Android SDK cmdline-tools
         uses: android-actions/setup-android@v3
 
@@ -50,7 +50,11 @@ jobs:
                      "build-tools;33.0.2" \
                      "ndk;25.2.9519653"
 
-      # Кэш
+      - name: Add Android tools to PATH (append safely)
+        run: |
+          echo "$ANDROID_SDK_ROOT/platform-tools" >> $GITHUB_PATH
+          echo "$ANDROID_SDK_ROOT/tools/bin" >> $GITHUB_PATH
+
       - name: Cache .buildozer
         uses: actions/cache@v4
         with:
@@ -67,7 +71,6 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      # ВАЖНО: даём Buildozer'у явные пути SDK/NDK
       - name: Build debug APK
         env:
           ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
@@ -76,10 +79,9 @@ jobs:
           ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/25.2.9519653
           ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/25.2.9519653
           ANDROIDNDK: /usr/local/lib/android/sdk/ndk/25.2.9519653
-          PATH: /usr/local/lib/android/sdk/platform-tools:/usr/local/lib/android/sdk/tools/bin:${{ env.PATH }}
         run: |
-          echo "Using SDK: $ANDROID_SDK_ROOT"
-          echo "Using NDK: $ANDROID_NDK_ROOT"
+          echo "SDK: $ANDROID_SDK_ROOT"
+          echo "NDK: $ANDROID_NDK_ROOT"
           buildozer -v android debug
 
       - name: Upload APK

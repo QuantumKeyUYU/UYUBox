@@ -9,7 +9,7 @@ from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 
-# Без раннего импорта тяжёлых модулей ядра
+# Не грузим тяжёлые части ядра заранее
 try:
     from zilant_prime_core.crypto import derive_key
     from zilant_prime_core.container import read_metadata
@@ -24,7 +24,7 @@ class FileChooserScreen(Screen):
 class MainScreen(Screen):
     def do_pack(self, password: str, output_name: str) -> None:
         try:
-            from zilant_prime_core.container import pack_file  # lazy import
+            from zilant_prime_core.container import pack_file
         except Exception as e:
             self._show_message(f"Ошибка загрузки ядра: {e}")
             return
@@ -36,7 +36,7 @@ class MainScreen(Screen):
 
     def do_unpack(self, password: str, output_name: str) -> None:
         try:
-            from zilant_prime_core.container import unpack_file  # lazy import
+            from zilant_prime_core.container import unpack_file
         except Exception as e:
             self._show_message(f"Ошибка загрузки ядра: {e}")
             return
@@ -74,7 +74,7 @@ class ZilantPrimeApp(MDApp):
         return sm
 
 if __name__ == "__main__":
-    # Разрешения (на реальном устройстве)
+    # Разрешения на устройстве
     try:
         from android.permissions import request_permissions, Permission
         request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
