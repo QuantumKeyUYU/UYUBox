@@ -1,47 +1,39 @@
 [app]
-# -----------------------------------------------------------------------------
-# ОСНОВНЫЕ ПАРАМЕТРЫ ПРИЛОЖЕНИЯ
-# -----------------------------------------------------------------------------
-title = Zilant Mobile
-package.name = zilantmobile
-package.domain = org.quantumkey
+title = Zilant Prime Mobile
+package.name = zilant_prime_mobile
+package.domain = org.zilantprime
 source.dir = .
-source.include_exts = py,png,jpg,kv,ttf,txt,md
-version = 0.1
-entrypoint = main.py
+source.include_exts = py,png,jpg,kv,atlas
+version = 0.1.0
+requirements = python3,kivy==2.2.1,kivymd==1.2.0,argon2-cffi,cryptography,git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
 orientation = portrait
 fullscreen = 0
+android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
+android.api = 33
+android.minapi = 24
+android.archs = arm64-v8a, armeabi-v7a
+android.ndk = 25.2.9519653
+android.gradle_dependencies = 
+android.allow_backup = True
+log_level = 2
 
-# -----------------------------------------------------------------------------
-# ЗАВИСИМОСТИ PYTHON
-# -----------------------------------------------------------------------------
-# Версии зафиксированы для стабильной сборки.
-requirements = \
-    kivy==2.3.0,\
-    kivymd==1.2.0,\
-    cryptography==41.0.7,\
-    argon2-cffi==23.1.0,\
-    cffi==1.16.0,\
-    git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
+# Если будут ошибки с SSL или cryptography — включим эти пакеты:
+# (но лучше не включать без нужды, чтобы APK не раздулся)
+# requirements.source = pycryptodome, cffi
 
-# -----------------------------------------------------------------------------
-# РАЗРЕШЕНИЯ ANDROID
-# -----------------------------------------------------------------------------
-android.permissions = READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
+# Пакуем всё в один .apk
+package.mode = debug
+android.enable_androidx = True
 
-# -----------------------------------------------------------------------------
-# ПАРАМЕТРЫ СБОРКИ ANDROID
-# -----------------------------------------------------------------------------
-android.api = 34
-android.minapi = 21
-android.build_tools_version = 34.0.0
-# Используем современную, требуемую версию NDK
-android.ndk = 25c
-android.accept_sdk_license = True
-arch = arm64-v8a, armeabi-v7a
+# Значки
+icon.filename = 34362759-5ab3-4969-b744-d3efa2d51a9d.png
 
-# -----------------------------------------------------------------------------
-# ОПТИМИЗАЦИЯ
-# -----------------------------------------------------------------------------
-# Убрали p4a.branch, чтобы использовать самую свежую, стабильную версию
-copy_libs = 1
+# Поддержка Kivy на Android
+p4a.branch = master
+p4a.bootstrap = sdl2
+
+# Чтобы не ломались cryptography и argon2
+requirements.source.exclude_exts = pyc,pyo
+
+# Мелочи
+ignore_path = .git,.github,__pycache__,*.pyc,*.pyo,.gitignore
