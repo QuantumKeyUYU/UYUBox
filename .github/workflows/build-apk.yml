@@ -14,7 +14,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # sdkmanager требует JDK 17+
       - name: Set up Java (JDK 17)
         uses: actions/setup-java@v4
         with:
@@ -38,7 +37,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install cython buildozer
 
-      # ==== ANDROID SDK/NDK ====
+      # ---- ANDROID SDK / NDK ----
       - name: Install Android SDK cmdline-tools
         uses: android-actions/setup-android@v3
 
@@ -49,11 +48,17 @@ jobs:
                      "platforms;android-33" \
                      "build-tools;33.0.2" \
                      "ndk;25.2.9519653"
+          # p4a ищет cmdline-tools/latest; создаём "latest" -> 16.0
+          CT_DIR="$ANDROID_SDK_ROOT/cmdline-tools"
+          if [ -d "$CT_DIR" ] && [ -d "$CT_DIR/16.0" ]; then
+            rm -rf "$CT_DIR/latest"
+            ln -s "$CT_DIR/16.0" "$CT_DIR/latest"
+          fi
 
-      - name: Add Android tools to PATH (append safely)
+      - name: Add Android tools to PATH (no legacy tools/bin)
         run: |
           echo "$ANDROID_SDK_ROOT/platform-tools" >> $GITHUB_PATH
-          echo "$ANDROID_SDK_ROOT/tools/bin" >> $GITHUB_PATH
+          echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
       - name: Cache .buildozer
         uses: actions/cache@v4
