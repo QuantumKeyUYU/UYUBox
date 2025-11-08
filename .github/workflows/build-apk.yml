@@ -27,7 +27,9 @@ jobs:
       - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade Cython wheel build
+          pip uninstall -y Cython || true
+          pip install "Cython<3.0.0"
+          pip install --upgrade wheel build
           pip install "buildozer==1.5.0"
           # p4a ставим из GitHub, чтобы не зависеть от отсутствующих релизов на PyPI
           pip install "python-for-android @ git+https://github.com/kivy/python-for-android@develop"
