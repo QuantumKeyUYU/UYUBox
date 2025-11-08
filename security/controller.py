@@ -70,6 +70,7 @@ class SecureFileController:
                     augmented_password,
                     kem_public_key=kem_public_key,
                     progress_cb=lambda value: progress_cb(value) if progress_cb else None,
+                    cancel_event=self._cancel_event,
                 )
                 if decoy_message:
                     record_event(
@@ -90,11 +91,18 @@ class SecureFileController:
                 if completion_cb and not self._cancel_event.is_set():
                     completion_cb(None)
             except Exception as exc:  # pragma: no cover - worker thread
-                record_event(
-                    "pack.failure",
-                    details={"src": os.path.abspath(src_path), "error": str(exc)},
-                )
-                if completion_cb:
+                is_cancelled = isinstance(exc, RuntimeError) and str(exc) == "Операция отменена"
+                if is_cancelled:
+                    record_event(
+                        "pack.cancelled",
+                        details={"src": os.path.abspath(src_path)},
+                    )
+                else:
+                    record_event(
+                        "pack.failure",
+                        details={"src": os.path.abspath(src_path), "error": str(exc)},
+                    )
+                if completion_cb and not self._cancel_event.is_set() and not is_cancelled:
                     completion_cb(str(exc))
             finally:
                 self._cancel_event.clear()
@@ -127,6 +135,7 @@ class SecureFileController:
                     augmented_password,
                     kem_private_key=kem_private_key,
                     progress_cb=lambda value: progress_cb(value) if progress_cb else None,
+                    cancel_event=self._cancel_event,
                 )
                 record_event(
                     "unpack.success",
@@ -138,11 +147,18 @@ class SecureFileController:
                 if completion_cb and not self._cancel_event.is_set():
                     completion_cb(None)
             except Exception as exc:  # pragma: no cover - worker thread
-                record_event(
-                    "unpack.failure",
-                    details={"src": os.path.abspath(src_path), "error": str(exc)},
-                )
-                if completion_cb:
+                is_cancelled = isinstance(exc, RuntimeError) and str(exc) == "Операция отменена"
+                if is_cancelled:
+                    record_event(
+                        "unpack.cancelled",
+                        details={"src": os.path.abspath(src_path)},
+                    )
+                else:
+                    record_event(
+                        "unpack.failure",
+                        details={"src": os.path.abspath(src_path), "error": str(exc)},
+                    )
+                if completion_cb and not self._cancel_event.is_set() and not is_cancelled:
                     completion_cb(str(exc))
             finally:
                 self._cancel_event.clear()
