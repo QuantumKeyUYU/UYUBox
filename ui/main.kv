@@ -1,0 +1,291 @@
+#:import HomeScreen app.screens.home.HomeScreen
+#:import WorkflowsScreen app.screens.workflows.WorkflowsScreen
+#:import SecureShareScreen app.screens.secure_share.SecureShareScreen
+#:import AuditScreen app.screens.audit.AuditScreen
+#:import FileChooserScreen app.screens.file_chooser.FileChooserScreen
+#:import MDSeparator kivymd.uix.card.MDSeparator
+
+ScreenManager:
+    HomeScreen:
+    WorkflowsScreen:
+    SecureShareScreen:
+    AuditScreen:
+    FileChooserScreen:
+
+<HomeScreen>:
+    name: "home"
+    md_bg_color: 0.05, 0.05, 0.08, 1
+    on_enter: self.ids.workflow_overview.text = "Zero-trust workspace готов к использованию"
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "UYUBox Quantum"
+            elevation: 2
+            left_action_items: [["file", lambda x: app.root.current = "filechooser"]]
+            right_action_items:
+                [["playlist-check", lambda x: app.root.current = "workflows"],
+                ["share-variant", lambda x: app.root.current = "secure_share"],
+                ["shield-account", lambda x: app.root.current = "audit"]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: dp(16)
+                spacing: dp(16)
+
+                MDCard:
+                    orientation: "vertical"
+                    padding: dp(16)
+                    md_bg_color: 0.11, 0.12, 0.18, 1
+                    MDLabel:
+                        text: root.message
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        halign: "left"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                    MDSeparator:
+                        height: dp(12)
+                    MDLabel:
+                        id: security_tier_label
+                        text: "Рекомендованный профиль: —"
+                        theme_text_color: "Custom"
+                        text_color: 0.6, 0.83, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                    MDLabel:
+                        id: environment_label
+                        text: "Статус устройства: —"
+                        theme_text_color: "Custom"
+                        text_color: 0.7, 0.9, 0.9, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                    MDLabel:
+                        id: workflow_overview
+                        text: ""
+                        theme_text_color: "Hint"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+                MDCard:
+                    orientation: "vertical"
+                    padding: dp(16)
+                    spacing: dp(12)
+                    md_bg_color: 0.12, 0.13, 0.2, 1
+
+                    MDLabel:
+                        text: "Файл"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        bold: True
+                    MDTextField:
+                        text: root.file_path
+                        hint_text: "Путь к файлу"
+                        readonly: True
+                    MDBoxLayout:
+                        adaptive_height: True
+                        spacing: dp(12)
+                        MDRaisedButton:
+                            text: "Выбрать"
+                            on_release: app.root.current = "filechooser"
+                        MDLabel:
+                            text: ""
+
+                MDCard:
+                    orientation: "vertical"
+                    padding: dp(16)
+                    spacing: dp(12)
+                    md_bg_color: 0.12, 0.13, 0.2, 1
+
+                    MDLabel:
+                        text: "Параметры шифрования"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        bold: True
+                    MDTextField:
+                        id: password_field
+                        hint_text: "Пароль"
+                        password: True
+                    MDTextField:
+                        id: output_field
+                        hint_text: "Имя контейнера"
+                        text: "secure.zilx"
+                    MDTextField:
+                        id: tier_field
+                        hint_text: "Профиль безопасности"
+                        text: "balanced"
+
+                    MDBoxLayout:
+                        adaptive_height: True
+                        spacing: dp(12)
+                        MDRaisedButton:
+                            text: "Упаковать"
+                            on_release: root.pack(password_field.text, output_field.text, tier_field.text)
+                        MDRaisedButton:
+                            text: "Распаковать"
+                            on_release: root.unpack(password_field.text, output_field.text)
+                        MDRaisedButton:
+                            text: "Метаданные"
+                            on_release: root.read_metadata()
+
+                MDCard:
+                    orientation: "vertical"
+                    padding: dp(16)
+                    md_bg_color: 0.12, 0.13, 0.2, 1
+                    MDLabel:
+                        text: "Метаданные контейнера"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        bold: True
+                    MDLabel:
+                        id: metadata_label
+                        text: ""
+                        theme_text_color: "Custom"
+                        text_color: 0.8, 0.9, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+<WorkflowsScreen>:
+    name: "workflows"
+    md_bg_color: 0.05, 0.05, 0.08, 1
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "Пайплайны"
+            left_action_items: [["arrow-left", lambda x: app.root.current = "home"]]
+        MDBoxLayout:
+            orientation: "horizontal"
+            padding: dp(16)
+            spacing: dp(16)
+
+            MDCard:
+                orientation: "vertical"
+                size_hint_x: 0.4
+                md_bg_color: 0.12, 0.13, 0.2, 1
+                ScrollView:
+                    MDList:
+                        id: workflow_list
+
+            MDCard:
+                orientation: "vertical"
+                md_bg_color: 0.12, 0.13, 0.2, 1
+                padding: dp(16)
+                spacing: dp(12)
+                MDLabel:
+                    text: "Шаги"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    bold: True
+                MDLabel:
+                    id: workflow_summary
+                    text: ""
+                    theme_text_color: "Custom"
+                    text_color: 0.8, 0.9, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                MDRaisedButton:
+                    text: "Запустить"
+                    on_release: root.execute()
+                MDSeparator:
+                    height: dp(12)
+                MDLabel:
+                    text: "Результат"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                ScrollView:
+                    MDLabel:
+                        id: execution_output
+                        text: ""
+                        theme_text_color: "Custom"
+                        text_color: 0.8, 0.9, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+<SecureShareScreen>:
+    name: "secure_share"
+    md_bg_color: 0.05, 0.05, 0.08, 1
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "Zero-Trust Gateway"
+            left_action_items: [["arrow-left", lambda x: app.root.current = "home"]]
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: dp(16)
+            spacing: dp(16)
+
+            MDCard:
+                orientation: "vertical"
+                md_bg_color: 0.12, 0.13, 0.2, 1
+                padding: dp(16)
+                spacing: dp(12)
+                MDTextField:
+                    id: owner_field
+                    hint_text: "Владелец"
+                MDTextField:
+                    id: pqc_field
+                    hint_text: "Постквантовый набор"
+                    text: "Kyber+Dilithium"
+                MDRaisedButton:
+                    text: "Создать сессию"
+                    on_release: root.create_session(owner_field.text, pqc_field.text)
+                MDLabel:
+                    text: root.status_message
+                    theme_text_color: "Custom"
+                    text_color: 0.8, 0.9, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+            MDCard:
+                orientation: "vertical"
+                md_bg_color: 0.12, 0.13, 0.2, 1
+                padding: dp(16)
+                spacing: dp(12)
+                MDTextField:
+                    id: session_id_field
+                    hint_text: "ID сессии"
+                MDTextField:
+                    id: participant_field
+                    hint_text: "Участник"
+                MDRaisedButton:
+                    text: "Подключиться"
+                    on_release: root.join_session(session_id_field.text, participant_field.text)
+
+            MDCard:
+                orientation: "vertical"
+                md_bg_color: 0.12, 0.13, 0.2, 1
+                padding: dp(16)
+                ScrollView:
+                    MDList:
+                        id: sessions_list
+
+<AuditScreen>:
+    name: "audit"
+    md_bg_color: 0.05, 0.05, 0.08, 1
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "Аудит"
+            left_action_items: [["arrow-left", lambda x: app.root.current = "home"]]
+        MDCard:
+            orientation: "vertical"
+            padding: dp(16)
+            md_bg_color: 0.12, 0.13, 0.2, 1
+            margin: dp(16)
+            ScrollView:
+                MDList:
+                    id: audit_list
+
+<FileChooserScreen>:
+    name: "filechooser"
+    BoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "Выбор файла"
+            left_action_items: [["arrow-left", lambda x: app.root.current = "home"]]
+        FileChooserIconView:
+            on_submit: root.select(selection)
+            on_selection: root.select(selection)
