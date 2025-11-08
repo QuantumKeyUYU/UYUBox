@@ -1,5 +1,21 @@
 from __future__ import annotations
 
+import sys
+import traceback
+
+
+def android_log(message: str) -> None:
+    """Send diagnostics to Android logcat (and stderr as fallback)."""
+    try:
+        from jnius import autoclass
+
+        Log = autoclass("android.util.Log")
+        Log.e("UYUBox", message)
+    except Exception:
+        # If jnius is not available, at least log to stderr
+        print(message, file=sys.stderr)
+
+
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.lang import Builder
@@ -220,9 +236,18 @@ class MainScreen(Screen):
             self._show_dialog("Энтропия", f"Оценка энтропии: {bits} бит")
 
         steps = [
-            WizardStep(title="validation", on_enter=_enter_validation, on_complete=_complete_validation),
-            WizardStep(title="entropy", on_enter=_enter_entropy, on_complete=lambda: None),
+            WizardStep(
+                title="validation",
+                on_enter=_enter_validation,
+                on_complete=_complete_validation,
+            ),
+            WizardStep(
+                title="entropy",
+                on_enter=_enter_entropy,
+                on_complete=lambda: None,
+            ),
         ]
+
         def _wrapped_finish() -> None:
             try:
                 on_finish()
@@ -233,7 +258,9 @@ class MainScreen(Screen):
         self._wizard.start()
         wizard_ref = self._wizard
         for index in range(len(steps)):
-            Clock.schedule_once(lambda *_: wizard_ref.complete_current(), (index + 1) * 0.05)
+            Clock.schedule_once(
+                lambda *_: wizard_ref.complete_current(), (index + 1) * 0.05
+            )
 
     def cancel_operation(self) -> None:
         self.controller.cancel()
@@ -276,7 +303,9 @@ class MainScreen(Screen):
                 output_path,
                 self.ids.password.text,
                 decoy_message=decoy_message,
-                progress_cb=lambda value: Clock.schedule_once(lambda *_: self._set_progress(value)),
+                progress_cb=lambda value: Clock.schedule_once(
+                    lambda *_: self._set_progress(value)
+                ),
                 completion_cb=self._on_operation_complete,
             )
 
@@ -296,7 +325,9 @@ class MainScreen(Screen):
                 file_path,
                 output_path,
                 self.ids.password.text,
-                progress_cb=lambda value: Clock.schedule_once(lambda *_: self._set_progress(value)),
+                progress_cb=lambda value: Clock.schedule_once(
+                    lambda *_: self._set_progress(value)
+                ),
                 completion_cb=self._on_operation_complete,
             )
 
@@ -379,12 +410,21 @@ class ZilantPrimeApp(MDApp):
             Recipe(
                 name="default_pack",
                 steps=[
-                    Step(name="audit.start", action=lambda: record_event("recipe.audit", details={"mode": "start"})),
-                    Step(name="audit.finish", action=lambda: record_event("recipe.audit", details={"mode": "finish"})),
+                    Step(
+                        name="audit.start",
+                        action=lambda: record_event(
+                            "recipe.audit", details={"mode": "start"}
+                        ),
+                    ),
+                    Step(
+                        name="audit.finish",
+                        action=lambda: record_event(
+                            "recipe.audit", details={"mode": "finish"}
+                        ),
+                    ),
                 ],
             )
         )
-
 
     def on_stop(self) -> None:
         if self.watchdog:
@@ -394,9 +434,22 @@ class ZilantPrimeApp(MDApp):
 
 if __name__ == "__main__":
     try:
-        from android.permissions import Permission, request_permissions
+        try:
+            from android.permissions import Permission, request_permissions
 
-        request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+            request_permissions(
+                [
+                    Permission.READ_EXTERNAL_STORAGE,
+                    Permission.WRITE_EXTERNAL_STORAGE,
+                ]
+            )
+        except Exception:
+            # Don't crash if permissions cannot be requested
+            pass
+
+        ZilantPrimeApp().run()
+
     except Exception:
-        pass
-    ZilantPrimeApp().run()
+        tb = traceback.format_exc()
+        android_log(tb)
+        print(tb, file=sys.stderr)
