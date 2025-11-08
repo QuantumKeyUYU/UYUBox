@@ -25,7 +25,25 @@ class CryptographyRecipe(CffiRecipe):
         if hostpython is None:
             return
 
+        # ``ensurepip`` is not guaranteed to install ``setuptools`` when
+        # python-for-android builds the hostpython.  In GitHub Actions the
+        # resulting environment was missing ``setuptools`` which caused the
+        # cryptography recipe installation to abort with ``ModuleNotFoundError``.
+        #
+        # First bootstrap ``pip`` (if possible) and then ensure that
+        # ``setuptools`` and ``wheel`` are available to satisfy
+        # ``setup.py``-based packages such as ``cryptography``.
         shprint(hostpython, "-m", "ensurepip", "--upgrade")
+        shprint(
+            hostpython,
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "pip",
+            "setuptools",
+            "wheel",
+        )
 
 
 recipe = CryptographyRecipe()
