@@ -9,10 +9,11 @@ except ImportError:  # pragma: no cover - fallback for newer p4a
 
 class CryptographyRecipe(CffiRecipe):
     version = "3.4.7"
-    url = (
-        "https://files.pythonhosted.org/packages/3c/a9/50e54f9b89e0ee1d3f3f94a639a6a39"
-        "aea66e68132c0aaf645ed90e2990b/cryptography-3.4.7.tar.gz"
-    )
+    # The previously pinned wheel URL used a hashed PyPI storage path which is
+    # no longer available (404).  Using the canonical ``packages/source`` path
+    # keeps the recipe resilient to future storage migrations on PyPI while
+    # still referencing the exact same release archive.
+    url = "https://files.pythonhosted.org/packages/source/c/cryptography/cryptography-3.4.7.tar.gz"
     depends = ["openssl", "setuptools", "cffi"]
 
 
