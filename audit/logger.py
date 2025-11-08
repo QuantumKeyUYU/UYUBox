@@ -5,13 +5,29 @@ import hashlib
 import json
 import os
 import time
+import uuid
 from pathlib import Path
 from typing import Any, Dict
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-AUDIT_DIR = Path.home() / ".zilant_audit"
+
+def _resolve_audit_dir() -> Path:
+    """Return the directory where audit artefacts should be stored.
+
+    Tests and power users can point the logger to a custom location via the
+    ``ZILANT_AUDIT_DIR`` environment variable. When the variable is not set we
+    fall back to the user's home directory, preserving the previous behaviour.
+    """
+
+    override = os.environ.get("ZILANT_AUDIT_DIR")
+    if override:
+        return Path(override).expanduser()
+    return Path.home() / ".zilant_audit"
+
+
+AUDIT_DIR = _resolve_audit_dir()
 AUDIT_DIR.mkdir(parents=True, exist_ok=True)
 KEY_PATH = AUDIT_DIR / "signing_key.pem"
 CHAIN_STATE_PATH = AUDIT_DIR / "chain.state"
@@ -61,7 +77,7 @@ def record_event(event: str, *, details: Dict[str, Any] | None = None) -> Path:
         "signature": signature.hex(),
         "chain_hash": chain_hash,
     }
-    file_path = AUDIT_DIR / f"audit_{timestamp}.json"
+    file_path = AUDIT_DIR / f"audit_{timestamp}_{uuid.uuid4().hex}.json"
     file_path.write_text(json.dumps(entry, ensure_ascii=False, indent=2))
     _store_chain_hash(chain_hash)
     return file_path
