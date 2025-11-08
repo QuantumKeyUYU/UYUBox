@@ -16,7 +16,7 @@ class CryptographyRecipe(PythonRecipe):
     # убедиться, что в hostpython есть pip/setuptools/wheel.
     def install_python_package(self, arch):
         env = self.get_recipe_env(arch)
-        hostpython = self.get_hostpython(arch)
+        hostpython = sh.Command(self.ctx.hostpython)
 
         # 1) bootstrap pip для hostpython (некоторые сборки идут без pip)
         try:
@@ -39,13 +39,15 @@ class CryptographyRecipe(PythonRecipe):
         )
 
         # 3) стандартная установка пакета (в таргетный site-packages)
-        with current_directory(self.get_build_dir(arch.arch)):
-            shprint(
-                hostpython,
+        build_dir = self.get_build_dir(arch.arch)
+        site_packages_dir = self.ctx.get_site_packages_dir(arch)
+
+        with current_directory(build_dir):
+            self.call_hostpython_via_targetpython(
                 "setup.py",
                 "install",
                 "-O2",
-                "--root=" + self.ctx.get_site_packages_dir(arch),
+                f"--root={site_packages_dir}",
                 "--install-lib=.",
                 _env=env,
             )
