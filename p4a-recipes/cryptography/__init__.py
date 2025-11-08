@@ -5,51 +5,32 @@ import sh
 
 
 class CryptographyRecipe(PythonRecipe):
-    # версия без Rust
-    version = "3.4.7"
-    url = "https://files.pythonhosted.org/packages/source/c/cryptography/cryptography-{version}.tar.gz"
+    name = 'cryptography'
+    version = '41.0.7'
+    url = 'https://files.pythonhosted.org/packages/source/c/cryptography/cryptography-{version}.tar.gz'
+    depends = ['openssl', 'cffi', 'setuptools', 'wheel', 'six', 'pycparser']
+    call_hostpython_via_targetpython = False
 
-    # зависимости времени сборки/линковки
-    depends = ["openssl", "cffi", "setuptools", "six", "pycparser"]
-
-    # p4a по умолчанию зовёт `setup.py install`. Нам нужно заранее
-    # убедиться, что в hostpython есть pip/setuptools/wheel.
     def install_python_package(self, arch):
         env = self.get_recipe_env(arch)
-        hostpython = sh.Command(self.ctx.hostpython)
+        hostpython = self.ctx.hostpython
 
-        # 1) bootstrap pip для hostpython (некоторые сборки идут без pip)
+        # ensure pip on hostpython
         try:
-            shprint(hostpython, "-m", "ensurepip", _env=env)
+            shprint(hostpython, '-m', 'ensurepip', '--upgrade', _env=env)
         except sh.ErrorReturnCode:
-            # ignore: если уже установлен
             pass
+        shprint(hostpython, '-m', 'pip', 'install', '--upgrade', 'pip', 'setuptools', 'wheel', _env=env)
 
-        # 2) обновить pip + поставить setuptools/wheel в hostpython
-        shprint(
-            hostpython,
-            "-m",
-            "pip",
-            "install",
-            "-U",
-            "pip",
-            "setuptools",
-            "wheel",
-            _env=env,
-        )
-
-        # 3) стандартная установка пакета (в таргетный site-packages)
         build_dir = self.get_build_dir(arch.arch)
-        site_packages_dir = self.ctx.get_site_packages_dir(arch)
+        site_packages = self.ctx.get_site_packages_dir(arch)
 
         with current_directory(build_dir):
-            self.call_hostpython_via_targetpython(
-                "setup.py",
-                "install",
-                "-O2",
-                f"--root={site_packages_dir}",
-                "--install-lib=.",
-                _env=env,
+            shprint(
+                hostpython, '-m', 'pip', 'install', '.',
+                '--no-deps', '--no-build-isolation',
+                '--target', site_packages,
+                _env=env
             )
 
 
