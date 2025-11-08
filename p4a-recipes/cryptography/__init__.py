@@ -20,7 +20,8 @@ class CryptographyRecipe(PythonRecipe):
             shprint(hostpython, '-m', 'ensurepip', '--upgrade', _env=env)
         except sh.ErrorReturnCode:
             pass
-        shprint(hostpython, '-m', 'pip', 'install', '--upgrade', 'pip', 'setuptools', 'wheel', _env=env)
+        shprint(hostpython, '-m', 'pip', 'install', '--upgrade', 'pip', _env=env)
+        shprint(hostpython, '-m', 'pip', 'install', 'setuptools', 'wheel', _env=env)
 
         build_dir = self.get_build_dir(arch.arch)
         site_packages = self.ctx.get_site_packages_dir(arch)
