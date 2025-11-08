@@ -18,10 +18,12 @@ from integrity.validator import IntegrityError, verify_container
 from security.android_security import apply_secure_window, enforce_pause_lock
 from security.biometric import authenticate
 from security.controller import SecureFileController
+from security.session import SessionError, session_manager
 from security.validation import collect_issues, validate_file_path, validate_password
 from security.runtime_checks import SecurityIssue, run_environment_checks
 from ui.wizard import WizardController, WizardStep
 from workflow.recipes import Recipe, Step, registry
+from security.watchdog import EnvironmentWatchdog
 
 KV = """
 ScreenManager:
@@ -110,6 +112,7 @@ class LockScreen(Screen):
         if self.lockdown:
             self._show_lockdown_dialog()
             return
+        session_manager.activate()
         self.manager.current = "main"
 
     def request_biometrics(self) -> None:
@@ -118,6 +121,7 @@ class LockScreen(Screen):
             return
 
         def _success() -> None:
+            session_manager.activate()
             Clock.schedule_once(lambda *_: setattr(self.manager, "current", "main"))
 
         def _failure(reason: str) -> None:
@@ -135,6 +139,7 @@ class LockScreen(Screen):
         self.warning_text = "\n".join(messages)
         if any(issue.severity == "critical" for issue in issues):
             self.lockdown = True
+            session_manager.invalidate("Обнаружены критические проблемы среды")
 
     def _show_lockdown_dialog(self) -> None:
         if self._dialog:
@@ -220,6 +225,11 @@ class MainScreen(Screen):
         output_path = self.ids.output_path.text or (file_path + ".zilant")
         password = self.ids.password.text
         decoy_message = self.ids.decoy.text or None
+        try:
+            session_manager.require_active()
+        except SessionError as exc:
+            self._show_dialog("Сессия заблокирована", str(exc))
+            raise ValueError(str(exc)) from exc
         issues = collect_issues(
             validate_file_path(file_path, must_exist=True),
             validate_password(password),
@@ -298,6 +308,8 @@ class MainScreen(Screen):
 
 
 class ZilantPrimeApp(MDApp):
+    watchdog: EnvironmentWatchdog | None = None
+
     def build(self):
         self.title = "Zilant Prime Mobile"
         Window.size = (420, 760)
@@ -318,6 +330,27 @@ class ZilantPrimeApp(MDApp):
             )
             lock_screen: LockScreen = sm.get_screen("lock")
             lock_screen.report_issues(issues)
+            if any(issue.severity == "critical" for issue in issues):
+                session_manager.invalidate("Обнаружены угрозы среды при запуске")
+        lock_screen = sm.get_screen("lock")
+        main_screen: MainScreen = sm.get_screen("main")
+
+        def _lockdown_handler(found_issues: list[SecurityIssue]) -> None:
+            session_manager.invalidate("Watchdog заблокировал сессию")
+            main_screen.controller.cancel()
+            main_screen.busy = False
+            main_screen._set_status("Среда небезопасна. Сессия заблокирована.")
+            sm.current = "lock"
+            lock_screen.lockdown = True
+            lock_screen.report_issues(found_issues)
+
+        self.watchdog = EnvironmentWatchdog(
+            interval=10.0,
+            scheduler=lambda fn: Clock.schedule_once(lambda *_: fn()),
+            issue_handler=lock_screen.report_issues,
+            lockdown_handler=_lockdown_handler,
+        )
+        self.watchdog.start()
         return sm
 
     def _register_recipes(self) -> None:
@@ -330,6 +363,12 @@ class ZilantPrimeApp(MDApp):
                 ],
             )
         )
+
+
+    def on_stop(self) -> None:
+        if self.watchdog:
+            self.watchdog.stop()
+        session_manager.clear()
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ from typing import Callable, Optional
 from audit.logger import record_event
 from crypto_core.hybrid import HybridEncryptor
 from security.android_security import fetch_keystore_secret
+from security.session import SessionError, session_manager
 from integrity.validator import IntegrityError, fingerprint, verify_container
 
 ProgressCallback = Callable[[float], None]
@@ -59,6 +60,13 @@ class SecureFileController:
     ) -> None:
         self.cancel()
         self._wait_for_thread()
+
+        try:
+            session_manager.require_active()
+        except SessionError as exc:
+            if completion_cb:
+                completion_cb(str(exc))
+            return
 
         def _worker() -> None:
             try:
@@ -133,6 +141,13 @@ class SecureFileController:
     ) -> None:
         self.cancel()
         self._wait_for_thread()
+
+        try:
+            session_manager.require_active()
+        except SessionError as exc:
+            if completion_cb:
+                completion_cb(str(exc))
+            return
 
         def _worker() -> None:
             try:
