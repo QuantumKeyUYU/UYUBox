@@ -1,4 +1,10 @@
-from pythonforandroid.recipe import CffiRecipe
+try:
+    from pythonforandroid.recipe import CffiRecipe
+except ImportError:  # pragma: no cover - fallback for newer p4a
+    try:
+        from pythonforandroid.recipe import PyprojectRecipe as CffiRecipe
+    except ImportError:  # pragma: no cover - final fallback
+        from pythonforandroid.recipe import PythonRecipe as CffiRecipe
 
 
 class CryptographyRecipe(CffiRecipe):
