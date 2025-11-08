@@ -3,4 +3,5 @@ kivy>=2.2.0
 kivymd>=1.2.0
 argon2-cffi>=23.1.0
 cryptography>=42.0.0
+pqcrypto>=0.1.5
 git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
