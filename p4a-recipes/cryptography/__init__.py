@@ -5,17 +5,17 @@ from pythonforandroid.recipe import PythonRecipe
 
 class CryptographyRecipe(PythonRecipe):
     """
-    Рецепт для библиотеки cryptography 3.4.7 (ветка без Rust) под python-for-android.
+    Рецепт для библиотеки cryptography 3.3.2 (последняя без Rust) под python-for-android.
 
-    В requirements указываем:
-        cryptography==3.4.7
+    В requirements указываем диапазон:
+        "cryptography<3.4"
     """
 
     # имя рецепта должно совпадать с именем пакета в requirements
     name = "cryptography"
 
     # версия, которую собираем
-    version = "3.4.7"
+    version = "3.3.2"
 
     # источник исходников на PyPI
     url = (
@@ -42,7 +42,7 @@ class CryptographyRecipe(PythonRecipe):
         """
         Дополнительно блокируем попытки использовать Rust,
         даже если когда-нибудь включишь более новую версию.
-        Для 3.4.7 это не обязательно, но и не мешает.
+        Для 3.3.2 это не обязательно, но и не мешает.
         """
         env = super().get_recipe_env(arch, **kwargs)
         env["CRYPTOGRAPHY_DONT_BUILD_RUST"] = "1"
