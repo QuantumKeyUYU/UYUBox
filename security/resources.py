@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import os
 import shutil
-from dataclasses import dataclass
 
 from security.policy import policy
 
