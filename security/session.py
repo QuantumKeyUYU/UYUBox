@@ -7,6 +7,7 @@ import time
 from dataclasses import dataclass
 
 from audit.logger import record_event
+from security.policy import policy
 
 
 class SessionError(RuntimeError):
@@ -89,7 +90,7 @@ class SessionManager:
         record_event("session.cleared", details={})
 
 
-session_manager = SessionManager()
+session_manager = SessionManager(default_ttl=policy.session_ttl)
 
 
 __all__ = ["SessionError", "SessionManager", "session_manager"]

@@ -100,6 +100,11 @@ ScreenManager:
             id: status
             text: "Готово"
             halign: "left"
+        MDLabel:
+            id: ttl_status
+            text: "Сессия: —"
+            halign: "left"
+            theme_text_color: "Secondary"
 """
 
 
@@ -113,6 +118,7 @@ class LockScreen(Screen):
             self._show_lockdown_dialog()
             return
         session_manager.activate()
+        record_event("ui.unlock", details={"method": "passcode"})
         self.manager.current = "main"
 
     def request_biometrics(self) -> None:
@@ -122,6 +128,7 @@ class LockScreen(Screen):
 
         def _success() -> None:
             session_manager.activate()
+            record_event("ui.unlock", details={"method": "biometric"})
             Clock.schedule_once(lambda *_: setattr(self.manager, "current", "main"))
 
         def _failure(reason: str) -> None:
@@ -163,12 +170,18 @@ class MainScreen(Screen):
         super().__init__(**kwargs)
         self.progress_bar: MDProgressBar | None = None
         self.status_label: MDLabel | None = None
+        self.ttl_label: MDLabel | None = None
         self.controller = SecureFileController()
         self._wizard: WizardController | None = None
+        self._ttl_event = None
 
     def on_kv_post(self, base_widget):
         self.progress_bar = self.ids.progress
         self.status_label = self.ids.status
+        self.ttl_label = self.ids.ttl_status
+        self._update_session_ttl()
+        if self._ttl_event is None:
+            self._ttl_event = Clock.schedule_interval(self._update_session_ttl, 1.0)
 
     def _set_status(self, text: str) -> None:
         if self.status_label:
@@ -177,6 +190,14 @@ class MainScreen(Screen):
     def _set_progress(self, value: float) -> None:
         if self.progress_bar:
             self.progress_bar.value = value
+
+    def _update_session_ttl(self, *_args) -> None:
+        ttl = session_manager.remaining_ttl()
+        if self.ttl_label:
+            if ttl <= 0:
+                self.ttl_label.text = "Сессия: заблокирована"
+            else:
+                self.ttl_label.text = f"Сессия: {int(ttl)}с"
 
     def _show_dialog(self, title: str, text: str) -> None:
         button = MDFlatButton(text="OK")

@@ -6,6 +6,8 @@ import re
 from dataclasses import dataclass
 from typing import Iterable, Optional
 
+from security.policy import policy
+
 PASSWORD_ENTROPY_REGEX = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$")
 
 
@@ -15,7 +17,12 @@ class ValidationIssue:
     message: str
 
 
-def validate_file_path(path: str, *, must_exist: bool = True, max_size_mb: int = 512) -> list[ValidationIssue]:
+def validate_file_path(
+    path: str,
+    *,
+    must_exist: bool = True,
+    max_size_mb: int | None = None,
+) -> list[ValidationIssue]:
     issues: list[ValidationIssue] = []
     normalized = os.path.expanduser(path or "").strip()
     if not normalized:
@@ -30,7 +37,8 @@ def validate_file_path(path: str, *, must_exist: bool = True, max_size_mb: int =
         size_bytes = os.path.getsize(normalized)
     except OSError:
         size_bytes = 0
-    if size_bytes and size_bytes > max_size_mb * 1024 * 1024:
+    max_bytes = (max_size_mb if max_size_mb is not None else policy.max_file_size_mb) * 1024 * 1024
+    if size_bytes and size_bytes > max_bytes:
         issues.append(
             ValidationIssue(
                 "file_path",

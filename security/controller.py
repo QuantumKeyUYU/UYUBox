@@ -9,6 +9,11 @@ from typing import Callable, Optional
 from audit.logger import record_event
 from crypto_core.hybrid import HybridEncryptor
 from security.android_security import fetch_keystore_secret
+from security.resources import (
+    ResourceError,
+    ensure_pack_capacity,
+    ensure_unpack_capacity,
+)
 from security.session import SessionError, session_manager
 from integrity.validator import IntegrityError, fingerprint, verify_container
 
@@ -63,7 +68,16 @@ class SecureFileController:
 
         try:
             session_manager.require_active()
+            ensure_pack_capacity(src_path, dest_path)
         except SessionError as exc:
+            if completion_cb:
+                completion_cb(str(exc))
+            return
+        except ResourceError as exc:
+            record_event(
+                "pack.resource_block",
+                details={"dest": os.path.abspath(dest_path), "error": str(exc)},
+            )
             if completion_cb:
                 completion_cb(str(exc))
             return
@@ -144,7 +158,16 @@ class SecureFileController:
 
         try:
             session_manager.require_active()
+            ensure_unpack_capacity(src_path, dest_path)
         except SessionError as exc:
+            if completion_cb:
+                completion_cb(str(exc))
+            return
+        except ResourceError as exc:
+            record_event(
+                "unpack.resource_block",
+                details={"dest": os.path.abspath(dest_path), "error": str(exc)},
+            )
             if completion_cb:
                 completion_cb(str(exc))
             return
