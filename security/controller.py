@@ -9,6 +9,7 @@ from typing import Callable, Optional
 from audit.logger import record_event
 from crypto_core.hybrid import HybridEncryptor
 from security.android_security import fetch_keystore_secret
+from integrity.validator import IntegrityError, fingerprint, verify_container
 
 ProgressCallback = Callable[[float], None]
 CompletionCallback = Callable[[Optional[str]], None]
@@ -88,6 +89,15 @@ class SecureFileController:
                         "kem": bool(material.kem_public_key),
                     },
                 )
+                if not self._cancel_event.is_set():
+                    digest = fingerprint(dest_path)
+                    record_event(
+                        "pack.digest",
+                        details={
+                            "dest": os.path.abspath(dest_path),
+                            "digest": digest,
+                        },
+                    )
                 if completion_cb and not self._cancel_event.is_set():
                     completion_cb(None)
             except Exception as exc:  # pragma: no cover - worker thread
@@ -129,6 +139,15 @@ class SecureFileController:
                 if self._cancel_event.is_set():
                     return
                 augmented_password = self._augment_password(password)
+                metadata = verify_container(src_path)
+                record_event(
+                    "unpack.integrity",
+                    details={
+                        "src": os.path.abspath(src_path),
+                        "digest": metadata.get("digest"),
+                        "metadata_keys": sorted(metadata.keys()),
+                    },
+                )
                 self.encryptor.decrypt_file(
                     src_path,
                     dest_path,
@@ -144,8 +163,27 @@ class SecureFileController:
                         "dest": os.path.abspath(dest_path),
                     },
                 )
+                if not self._cancel_event.is_set():
+                    output_digest = fingerprint(dest_path)
+                    record_event(
+                        "unpack.digest",
+                        details={
+                            "dest": os.path.abspath(dest_path),
+                            "digest": output_digest,
+                        },
+                    )
                 if completion_cb and not self._cancel_event.is_set():
                     completion_cb(None)
+            except IntegrityError as exc:
+                record_event(
+                    "unpack.integrity_failure",
+                    details={
+                        "src": os.path.abspath(src_path),
+                        "error": str(exc),
+                    },
+                )
+                if completion_cb and not self._cancel_event.is_set():
+                    completion_cb(str(exc))
             except Exception as exc:  # pragma: no cover - worker thread
                 is_cancelled = isinstance(exc, RuntimeError) and str(exc) == "Операция отменена"
                 if is_cancelled:

@@ -4,7 +4,7 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.metrics import dp
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 from kivymd.app import MDApp
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
@@ -19,6 +19,7 @@ from security.android_security import apply_secure_window, enforce_pause_lock
 from security.biometric import authenticate
 from security.controller import SecureFileController
 from security.validation import collect_issues, validate_file_path, validate_password
+from security.runtime_checks import SecurityIssue, run_environment_checks
 from ui.wizard import WizardController, WizardStep
 from workflow.recipes import Recipe, Step, registry
 
@@ -39,10 +40,19 @@ ScreenManager:
             text: "Разблокировать"
             pos_hint: {"center_x": .5, "center_y": .45}
             on_release: root.unlock()
+            disabled: root.lockdown
         MDFlatButton:
             text: "Биометрия"
             pos_hint: {"center_x": .5, "center_y": .35}
             on_release: root.request_biometrics()
+            disabled: root.lockdown
+        MDLabel:
+            text: root.warning_text
+            halign: "center"
+            theme_text_color: "Error"
+            size_hint_y: None
+            text_size: self.width, None
+            height: self.texture_size[1] if self.texture_size[1] else 0
 
 <MainScreen>:
     name: "main"
@@ -93,11 +103,20 @@ ScreenManager:
 
 class LockScreen(Screen):
     _dialog: MDDialog | None = None
+    lockdown = BooleanProperty(False)
+    warning_text = StringProperty("")
 
     def unlock(self) -> None:
+        if self.lockdown:
+            self._show_lockdown_dialog()
+            return
         self.manager.current = "main"
 
     def request_biometrics(self) -> None:
+        if self.lockdown:
+            self._show_lockdown_dialog()
+            return
+
         def _success() -> None:
             Clock.schedule_once(lambda *_: setattr(self.manager, "current", "main"))
 
@@ -108,6 +127,28 @@ class LockScreen(Screen):
             dialog.open()
 
         authenticate("Подтвердите личность", on_success=_success, on_failure=_failure)
+
+    def report_issues(self, issues: list[SecurityIssue]) -> None:
+        if not issues:
+            return
+        messages = [f"• {issue.message}" for issue in issues]
+        self.warning_text = "\n".join(messages)
+        if any(issue.severity == "critical" for issue in issues):
+            self.lockdown = True
+
+    def _show_lockdown_dialog(self) -> None:
+        if self._dialog:
+            return
+        button = MDFlatButton(text="OK")
+        dialog = MDDialog(
+            title="Защита активна",
+            text="Обнаружена небезопасная среда. Устраните угрозы перед использованием.",
+            buttons=[button],
+        )
+        button.bind(on_release=lambda *_: dialog.dismiss())
+        dialog.bind(on_dismiss=lambda *_: setattr(self, "_dialog", None))
+        self._dialog = dialog
+        dialog.open()
 
 
 class MainScreen(Screen):
@@ -263,7 +304,20 @@ class ZilantPrimeApp(MDApp):
         apply_secure_window(Window)
         enforce_pause_lock(self)
         self._register_recipes()
+        issues = run_environment_checks()
         sm = Builder.load_string(KV)
+        if issues:
+            record_event(
+                "security.environment",
+                details={
+                    "issues": [
+                        {"severity": issue.severity, "message": issue.message}
+                        for issue in issues
+                    ]
+                },
+            )
+            lock_screen: LockScreen = sm.get_screen("lock")
+            lock_screen.report_issues(issues)
         return sm
 
     def _register_recipes(self) -> None:
