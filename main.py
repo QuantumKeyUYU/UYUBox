@@ -1,256 +1,51 @@
 from __future__ import annotations
 
-from typing import Callable, List, Optional, Tuple
-
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty, StringProperty
-from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.utils import platform
+from kivy.uix.screenmanager import Screen, ScreenManager, NoTransition
 
 from kivymd.app import MDApp
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 from kivymd.uix.progressbar import MDProgressBar
-
-
-# ---------------------------------------------------------------------------
-# БЕЗОПАСНЫЕ ИМПОРТЫ С ЗАПАСНЫМИ ВАРИАНТАМИ
-# ---------------------------------------------------------------------------
-
-def _log(msg: str) -> None:
-    # Пишет в консоль (на Android это улетит в logcat).
-    print(f"[ZILANT] {msg}")
-
-
-try:
-    from audit.logger import record_event as _record_event
-except Exception:  # pragma: no cover - mobile fallback
-
-    def _record_event(event: str, *, details=None):
-        _log(f"audit.logger unavailable, event={event}, details={details}")
-
-
-try:
-    from crypto_core.profiles import entropy_bits as _entropy_bits
-except Exception:  # pragma: no cover
-
-    def _entropy_bits(password: str) -> float:
-        # Грубая оценка энтропии, если настоящая функция недоступна.
-        return max(0.0, len(password) * 2.5)
-
-
-try:
-    from integrity.validator import IntegrityError, verify_container as _verify_container
-except Exception:  # pragma: no cover
-
-    class IntegrityError(RuntimeError):
-        pass
-
-    def _verify_container(path: str):
-        raise IntegrityError("Модуль проверки целостности недоступен на этой платформе.")
-
-
-try:
-    from security.android_security import apply_secure_window, enforce_pause_lock
-except Exception:  # pragma: no cover
-
-    def apply_secure_window(_window):
-        _log("android_security.apply_secure_window() fallback")
-
-    def enforce_pause_lock(_app):
-        _log("android_security.enforce_pause_lock() fallback")
-
-
-try:
-    from security.biometric import authenticate as _authenticate
-except Exception:  # pragma: no cover
-
-    def _authenticate(_title: str, on_success: Callable[[], None], on_failure: Callable[[str], None]):
-        on_failure("Биометрия недоступна в этой сборке.")
-
-
-try:
-    from security.controller import SecureFileController as _SecureFileController
-except Exception:  # pragma: no cover
-
-    class _SecureFileController:
-        def cancel(self) -> None:
-            _log("SecureFileController.cancel() fallback")
-
-        def pack(self, *_args, **_kwargs) -> None:
-            raise RuntimeError("Криптографическое ядро недоступно. Упаковка невозможна.")
-
-        def unpack(self, *_args, **_kwargs) -> None:
-            raise RuntimeError("Криптографическое ядро недоступно. Распаковка невозможна.")
-
-
-try:
-    from security.session import SessionError, session_manager
-except Exception:  # pragma: no cover
-
-    class SessionError(RuntimeError):
-        pass
-
-    class _DummySessionManager:
-        def activate(self, ttl: float | None = None) -> str:
-            _log(f"DummySessionManager.activate(ttl={ttl})")
-            return "dummy"
-
-        def invalidate(self, reason: str) -> None:
-            _log(f"DummySessionManager.invalidate(reason={reason!r})")
-
-        def require_active(self) -> str:
-            return "dummy"
-
-        def remaining_ttl(self) -> float:
-            return 0.0
-
-        def clear(self) -> None:
-            _log("DummySessionManager.clear()")
-
-    session_manager = _DummySessionManager()
-
-
-try:
-    from security.validation import (
-        collect_issues,
-        validate_file_path,
-        validate_password,
-    )
-except Exception:  # pragma: no cover
-
-    class _Issue:
-        def __init__(self, field: str, message: str):
-            self.field = field
-            self.message = message
-
-    def validate_file_path(path: str, must_exist: bool = True):
-        if not path:
-            return [_Issue("file", "Укажите путь к файлу.")]
-        return []
-
-    def validate_password(password: str):
-        if len(password) < 8:
-            return [_Issue("password", "Минимальная длина пароля — 8 символов.")]
-        return []
-
-    def collect_issues(*groups):
-        issues = []
-        for group in groups:
-            issues.extend(group or [])
-        return issues
-
-
-try:
-    from security.runtime_checks import SecurityIssue, run_environment_checks
-except Exception:  # pragma: no cover
-
-    class SecurityIssue:
-        def __init__(self, severity: str, message: str):
-            self.severity = severity
-            self.message = message
-
-    def run_environment_checks():
-        return []
-
-
-try:
-    from ui.wizard import WizardController, WizardStep
-except Exception:  # pragma: no cover
-
-    class WizardStep:
-        def __init__(self, title: str, on_enter=None, on_complete=None):
-            self.title = title
-            self.on_enter = on_enter or (lambda: None)
-            self.on_complete = on_complete or (lambda: None)
-
-    class WizardController:
-        def __init__(self, steps, on_finish=None):
-            self._steps = list(steps)
-            self._index = 0
-            self._on_finish = on_finish or (lambda: None)
-
-        def start(self):
-            if self._steps:
-                self._steps[0].on_enter()
-
-        def complete_current(self):
-            if self._index >= len(self._steps):
-                return
-            step = self._steps[self._index]
-            step.on_complete()
-            self._index += 1
-            if self._index < len(self._steps):
-                self._steps[self._index].on_enter()
-            else:
-                self._on_finish()
-
-
-try:
-    from workflow.recipes import Recipe, Step, registry
-except Exception:  # pragma: no cover
-
-    class Step:
-        def __init__(self, name: str, action):
-            self.name = name
-            self.action = action
-
-    class Recipe:
-        def __init__(self, name: str, steps):
-            self.name = name
-            self.steps = steps
-
-    class _Registry:
-        def register(self, recipe: Recipe):
-            _log(f"Recipe registered (fallback): {recipe.name}")
-
-    registry = _Registry()
-
-
-try:
-    from security.watchdog import EnvironmentWatchdog
-except Exception:  # pragma: no cover
-
-    class EnvironmentWatchdog:
-        def __init__(self, *_, **__):
-            _log("EnvironmentWatchdog disabled (fallback)")
-
-        def start(self):
-            _log("EnvironmentWatchdog.start() ignored (fallback)")
-
-        def stop(self):
-            _log("EnvironmentWatchdog.stop() ignored (fallback)")
-
-
-# Публичные алиасы
-record_event = _record_event
-entropy_bits = _entropy_bits
-verify_container = _verify_container
-SecureFileController = _SecureFileController
-authenticate = _authenticate
-
-
-# ---------------------------------------------------------------------------
-# KV-РАЗМЕТКА
-# ---------------------------------------------------------------------------
+from kivymd.uix.snackbar import Snackbar
+
+from audit.logger import record_event
+from crypto_core.profiles import entropy_bits
+from integrity.validator import IntegrityError, verify_container
+from security.android_security import apply_secure_window, enforce_pause_lock
+from security.biometric import authenticate
+from security.controller import SecureFileController
+from security.session import SessionError, session_manager
+from security.validation import collect_issues, validate_file_path, validate_password
+from security.runtime_checks import SecurityIssue, run_environment_checks
+from security.watchdog import EnvironmentWatchdog
+from ui.wizard import WizardController, WizardStep
+from workflow.recipes import Recipe, Step, registry
 
 KV = """
-ScreenManager:
-    LockScreen:
-    MainScreen:
-
 <LockScreen>:
     name: "lock"
     MDFloatLayout:
+        md_bg_color: app.theme_cls.bg_normal
+
         MDLabel:
             text: "Zilant Prime Mobile"
             halign: "center"
             pos_hint: {"center_x": .5, "center_y": .7}
             font_style: "H4"
+
+        MDLabel:
+            text: root.warning_text if root.warning_text else "Сессия заблокирована. Подтвердите доступ."
+            halign: "center"
+            theme_text_color: "Secondary"
+            pos_hint: {"center_x": .5, "center_y": .6}
+            size_hint_x: .8
+            text_size: self.width, None
 
         MDRaisedButton:
             text: "Разблокировать"
@@ -265,88 +60,172 @@ ScreenManager:
             disabled: root.lockdown
 
         MDLabel:
-            text: root.warning_text
+            text: "Среда: небезопасна" if root.lockdown else "Среда: ок"
             halign: "center"
-            theme_text_color: "Error"
-            size_hint_y: None
-            text_size: self.width, None
-            height: self.texture_size[1] if self.texture_size[1] else 0
+            pos_hint: {"center_x": .5, "center_y": .2}
+            theme_text_color: "Error" if root.lockdown else "Secondary"
+
 
 <MainScreen>:
     name: "main"
-    padding: dp(16)
-
     MDBoxLayout:
-        id: container
         orientation: "vertical"
-        spacing: dp(12)
-
-        MDTextField:
-            id: file_path
-            hint_text: "Путь к файлу"
-
-        MDTextField:
-            id: output_path
-            hint_text: "Выходной файл"
-
-        MDTextField:
-            id: password
-            hint_text: "Пароль"
-            password: True
-
-        MDTextField:
-            id: decoy
-            hint_text: "Decoy-сообщение (опционально)"
-
-        MDProgressBar:
-            id: progress
-            value: 0
-            max: 1
-
-        MDBoxLayout:
-            size_hint_y: None
-            height: dp(48)
-            spacing: dp(12)
-
-            MDRaisedButton:
-                text: "Упаковать"
-                on_release: root.start_pack()
-                disabled: root.busy
-
-            MDRaisedButton:
-                text: "Распаковать"
-                on_release: root.start_unpack()
-                disabled: root.busy
-
-            MDFlatButton:
-                text: "Метаданные"
-                on_release: root.show_metadata()
-                disabled: root.busy
-
-        MDFlatButton:
-            text: "Отмена операции"
-            on_release: root.cancel_operation()
-            disabled: not root.busy
-
-        MDLabel:
-            id: status
-            text: "Готово"
-            halign: "left"
 
         MDLabel:
             id: ttl_status
             text: "Сессия: —"
             halign: "left"
             theme_text_color: "Secondary"
+            size_hint_y: None
+            height: dp(32)
+            padding_x: dp(16)
+
+        MDTabs:
+            id: tabs
+            on_tab_switch: root.on_tab_switch(*args)
+
+            MDTabsItem:
+                title: "Файл"
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: dp(16)
+                    spacing: dp(12)
+
+                    MDTextField:
+                        id: file_path
+                        hint_text: "Источник (файл/контейнер)"
+                        helper_text: "Укажи путь к файлу или контейнеру"
+                        helper_text_mode: "on_focus"
+
+                    MDTextField:
+                        id: output_path
+                        hint_text: "Выходной файл"
+                        helper_text: "Путь для результата (по умолчанию *.zilant)"
+                        helper_text_mode: "on_focus"
+
+                    MDTextField:
+                        id: password
+                        hint_text: "Пароль"
+                        password: True
+                        on_text: root.on_password_changed(self.text)
+
+                    MDLabel:
+                        id: entropy_label
+                        text: "Энтропия: —"
+                        theme_text_color: "Secondary"
+                        size_hint_y: None
+                        height: dp(24)
+
+                    MDTextField:
+                        id: decoy
+                        hint_text: "Decoy-сообщение (опционально)"
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: dp(48)
+                        spacing: dp(12)
+
+                        MDRaisedButton:
+                            text: "Зашифровать"
+                            on_release: root.start_pack()
+
+                        MDRaisedButton:
+                            text: "Расшифровать"
+                            on_release: root.start_unpack()
+
+                        MDFlatButton:
+                            text: "Метаданные"
+                            on_release: root.show_metadata()
+
+                    MDProgressBar:
+                        id: progress
+                        value: 0
+                        max: 1
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: dp(48)
+                        spacing: dp(12)
+
+                        MDFlatButton:
+                            text: "Отмена операции"
+                            on_release: root.cancel_operation()
+
+                    MDLabel:
+                        id: status
+                        text: "Готово"
+                        halign: "left"
+                        theme_text_color: "Secondary"
+
+            MDTabsItem:
+                title: "Текст"
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: dp(16)
+                    spacing: dp(12)
+
+                    MDTextField:
+                        id: text_plain
+                        hint_text: "Открытый текст"
+                        multiline: True
+
+                    MDTextField:
+                        id: text_cipher
+                        hint_text: "Зашифрованный блок (Base64)"
+                        multiline: True
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: dp(48)
+                        spacing: dp(12)
+
+                        MDRaisedButton:
+                            text: "Шифровать"
+                            on_release: root.encrypt_text()
+
+                        MDRaisedButton:
+                            text: "Расшифровать"
+                            on_release: root.decrypt_text()
+
+            MDTabsItem:
+                title: "Настройки"
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: dp(16)
+                    spacing: dp(12)
+
+                    MDLabel:
+                        text: "Профиль безопасности"
+                        size_hint_y: None
+                        height: dp(24)
+
+                    MDSegmentedControl:
+                        id: profile_control
+                        size_hint_y: None
+                        height: dp(40)
+                        on_active: root.on_profile_changed(self, *args)
+                        MDSegmentedControlItem:
+                            text: "Normal"
+                        MDSegmentedControlItem:
+                            text: "Paranoid"
+
+                    MDLabel:
+                        text: "Управление"
+                        size_hint_y: None
+                        height: dp(24)
+
+                    MDRaisedButton:
+                        text: "Перепроверить среду"
+                        on_release: root.manual_env_check()
+
+                    MDRaisedButton:
+                        text: "Сбросить сессию"
+                        on_release: root.reset_session()
 """
 
 
-# ---------------------------------------------------------------------------
-# ЭКРАН БЛОКИРОВКИ
-# ---------------------------------------------------------------------------
-
 class LockScreen(Screen):
-    _dialog: Optional[MDDialog] = None
+    _dialog: MDDialog | None = None
     lockdown = BooleanProperty(False)
     warning_text = StringProperty("")
 
@@ -354,7 +233,6 @@ class LockScreen(Screen):
         if self.lockdown:
             self._show_lockdown_dialog()
             return
-
         session_manager.activate()
         record_event("ui.unlock", details={"method": "passcode"})
         self.manager.current = "main"
@@ -370,28 +248,27 @@ class LockScreen(Screen):
             Clock.schedule_once(lambda *_: setattr(self.manager, "current", "main"))
 
         def _failure(reason: str) -> None:
-            button = MDFlatButton(text="OK")
-            dialog = MDDialog(title="Биометрия", text=reason, buttons=[button])
-            button.bind(on_release=lambda *_: dialog.dismiss())
+            dialog = MDDialog(
+                title="Биометрия",
+                text=reason,
+                buttons=[MDFlatButton(text="OK", on_release=lambda *_: dialog.dismiss())],
+            )
             dialog.open()
 
         authenticate("Подтвердите личность", on_success=_success, on_failure=_failure)
 
-    def report_issues(self, issues: List[SecurityIssue]) -> None:
+    def report_issues(self, issues: list[SecurityIssue]) -> None:
         if not issues:
             return
-
         messages = [f"• {issue.message}" for issue in issues]
         self.warning_text = "\n".join(messages)
-
-        if any(getattr(issue, "severity", "") == "critical" for issue in issues):
+        if any(issue.severity == "critical" for issue in issues):
             self.lockdown = True
             session_manager.invalidate("Обнаружены критические проблемы среды")
 
     def _show_lockdown_dialog(self) -> None:
         if self._dialog:
             return
-
         button = MDFlatButton(text="OK")
         dialog = MDDialog(
             title="Защита активна",
@@ -404,32 +281,27 @@ class LockScreen(Screen):
         dialog.open()
 
 
-# ---------------------------------------------------------------------------
-# ОСНОВНОЙ ЭКРАН
-# ---------------------------------------------------------------------------
-
 class MainScreen(Screen):
     busy = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.progress_bar: Optional[MDProgressBar] = None
-        self.status_label: Optional[MDLabel] = None
-        self.ttl_label: Optional[MDLabel] = None
+        self.progress_bar: MDProgressBar | None = None
+        self.status_label: MDLabel | None = None
+        self.ttl_label: MDLabel | None = None
         self.controller = SecureFileController()
-        self._wizard: Optional[WizardController] = None
+        self._wizard: WizardController | None = None
         self._ttl_event = None
 
     def on_kv_post(self, base_widget):
         self.progress_bar = self.ids.progress
         self.status_label = self.ids.status
         self.ttl_label = self.ids.ttl_status
-
         self._update_session_ttl()
         if self._ttl_event is None:
             self._ttl_event = Clock.schedule_interval(self._update_session_ttl, 1.0)
 
-    # --- helpers ---
+    # ---------- общие утилиты ----------
 
     def _set_status(self, text: str) -> None:
         if self.status_label:
@@ -453,9 +325,28 @@ class MainScreen(Screen):
         button.bind(on_release=lambda *_: dialog.dismiss())
         dialog.open()
 
-    # --- wizard ---
+    def _notify(self, text: str) -> None:
+        Snackbar(text=text, duration=1.5).open()
 
-    def _run_wizard(self, *, on_finish: Callable[[], None]) -> None:
+    # ---------- UX callbacks ----------
+
+    def on_tab_switch(self, *args):
+        # можно писать аналитику по вкладкам
+        pass
+
+    def on_password_changed(self, password: str) -> None:
+        if not password:
+            self.ids.entropy_label.text = "Энтропия: —"
+            return
+        try:
+            bits = int(entropy_bits(password))
+            self.ids.entropy_label.text = f"Энтропия: {bits} бит"
+        except Exception:
+            self.ids.entropy_label.text = "Энтропия: недоступна"
+
+    # ---------- wizard ----------
+
+    def _run_wizard(self, *, on_finish) -> None:
         password = self.ids.password.text
 
         def _enter_validation() -> None:
@@ -466,8 +357,11 @@ class MainScreen(Screen):
 
         def _enter_entropy() -> None:
             self._set_status("Оценка энтропии пароля...")
-            bits = int(entropy_bits(password))
-            self._show_dialog("Энтропия", f"Оценка энтропии: {bits} бит")
+            try:
+                bits = int(entropy_bits(password))
+                self._show_dialog("Энтропия", f"Оценка энтропии: {bits} бит")
+            except Exception:
+                self._show_dialog("Энтропия", "Не удалось оценить энтропию.")
 
         steps = [
             WizardStep(title="validation", on_enter=_enter_validation, on_complete=_complete_validation),
@@ -482,24 +376,24 @@ class MainScreen(Screen):
 
         self._wizard = WizardController(steps=steps, on_finish=_wrapped_finish)
         self._wizard.start()
-
         wizard_ref = self._wizard
         for index in range(len(steps)):
             Clock.schedule_once(lambda *_: wizard_ref.complete_current(), (index + 1) * 0.05)
 
-    # --- operations ---
+    # ---------- операции с файлами ----------
 
     def cancel_operation(self) -> None:
         self.controller.cancel()
         self._set_status("Операция отменена")
         self._set_progress(0)
         self.busy = False
+        self._notify("Отменено")
 
-    def _validate_common(self) -> Tuple[str, str, Optional[str]]:
+    def _validate_common(self) -> tuple[str, str, str | None]:
         file_path = self.ids.file_path.text.strip()
         output_path = self.ids.output_path.text.strip() or (file_path + ".zilant")
         password = self.ids.password.text
-        decoy_message = (self.ids.decoy.text or "").strip() or None
+        decoy_message = self.ids.decoy.text or None
 
         try:
             session_manager.require_active()
@@ -513,7 +407,7 @@ class MainScreen(Screen):
         )
         if issues:
             text = "\n".join(f"{issue.field}: {issue.message}" for issue in issues)
-            self._show_dialog("Ошибки", text)
+            self._show_dialog("Ошибки параметров", text)
             raise ValueError(text)
 
         return file_path, output_path, decoy_message
@@ -525,23 +419,17 @@ class MainScreen(Screen):
             return
 
         def _finish_wizard() -> None:
-            self._set_status("Запуск упаковки...")
+            self._set_status("Запуск шифрования...")
             self._set_progress(0)
             self.busy = True
-
-            try:
-                self.controller.pack(
-                    file_path,
-                    output_path,
-                    self.ids.password.text,
-                    decoy_message=decoy_message,
-                    progress_cb=lambda value: Clock.schedule_once(
-                        lambda *_: self._set_progress(value)
-                    ),
-                    completion_cb=self._on_operation_complete,
-                )
-            except Exception as exc:  # мгновенная ошибка
-                self._on_operation_complete(str(exc))
+            self.controller.pack(
+                file_path,
+                output_path,
+                self.ids.password.text,
+                decoy_message=decoy_message,
+                progress_cb=lambda value: Clock.schedule_once(lambda *_: self._set_progress(value)),
+                completion_cb=self._on_operation_complete,
+            )
 
         self._run_wizard(on_finish=_finish_wizard)
 
@@ -552,35 +440,29 @@ class MainScreen(Screen):
             return
 
         def _finish_wizard() -> None:
-            self._set_status("Запуск распаковки...")
+            self._set_status("Запуск расшифровки...")
             self._set_progress(0)
             self.busy = True
-
-            try:
-                self.controller.unpack(
-                    file_path,
-                    output_path,
-                    self.ids.password.text,
-                    progress_cb=lambda value: Clock.schedule_once(
-                        lambda *_: self._set_progress(value)
-                    ),
-                    completion_cb=self._on_operation_complete,
-                )
-            except Exception as exc:
-                self._on_operation_complete(str(exc))
+            self.controller.unpack(
+                file_path,
+                output_path,
+                self.ids.password.text,
+                progress_cb=lambda value: Clock.schedule_once(lambda *_: self._set_progress(value)),
+                completion_cb=self._on_operation_complete,
+            )
 
         self._run_wizard(on_finish=_finish_wizard)
 
-    def _on_operation_complete(self, error: Optional[str]) -> None:
+    def _on_operation_complete(self, error: str | None) -> None:
         def _update(*_args):
             self.busy = False
             if error:
                 self._set_status(f"Ошибка: {error}")
-                self._show_dialog("Ошибка", error)
+                self._show_dialog("Ошибка операции", error)
             else:
                 self._set_status("Операция завершена")
                 record_event("ui.operation.complete", details={"screen": "main"})
-                self._show_dialog("Успех", "Операция завершена")
+                self._notify("Готово")
             self._set_progress(0)
 
         Clock.schedule_once(_update)
@@ -592,50 +474,116 @@ class MainScreen(Screen):
                 raise ValueError("Укажите путь к контейнеру.")
             metadata = verify_container(file_path)
             text = "\n".join(f"{key}: {value}" for key, value in metadata.items())
-            self._show_dialog("Метаданные", text)
+            self._show_dialog("Метаданные контейнера", text)
         except (IntegrityError, ValueError) as exc:
             self._show_dialog("Ошибка метаданных", str(exc))
 
+    # ---------- операции с текстом ----------
 
-# ---------------------------------------------------------------------------
-# ПРИЛОЖЕНИЕ
-# ---------------------------------------------------------------------------
+    def encrypt_text(self) -> None:
+        # здесь ты можешь использовать тот же SecureFileController или
+        # отдельный текстовый API из zilant-prime-core
+        try:
+            session_manager.require_active()
+        except SessionError as exc:
+            self._show_dialog("Сессия заблокирована", str(exc))
+            return
+
+        plain = self.ids.text_plain.text or ""
+        if not plain:
+            self._notify("Нет текста для шифрования")
+            return
+
+        password = self.ids.password.text
+        issues = collect_issues(validate_password(password))
+        if issues:
+            text = "\n".join(f"{issue.field}: {issue.message}" for issue in issues)
+            self._show_dialog("Пароль", text)
+            return
+
+        try:
+            # заглушка: тут зови реальный API ядра
+            from crypto_core.api import encrypt_text  # примерный модуль
+
+            cipher_b64 = encrypt_text(plain, password)
+            self.ids.text_cipher.text = cipher_b64
+            self._notify("Текст зашифрован")
+        except Exception as exc:
+            self._show_dialog("Ошибка шифрования текста", str(exc))
+
+    def decrypt_text(self) -> None:
+        try:
+            session_manager.require_active()
+        except SessionError as exc:
+            self._show_dialog("Сессия заблокирована", str(exc))
+            return
+
+        cipher_b64 = self.ids.text_cipher.text or ""
+        if not cipher_b64:
+            self._notify("Нет данных для расшифровки")
+            return
+
+        password = self.ids.password.text
+        try:
+            from crypto_core.api import decrypt_text  # примерный модуль
+
+            plain = decrypt_text(cipher_b64, password)
+            self.ids.text_plain.text = plain
+            self._notify("Текст расшифрован")
+        except Exception as exc:
+            self._show_dialog("Ошибка расшифровки текста", str(exc))
+
+    # ---------- настройки ----------
+
+    def on_profile_changed(self, control, *args):
+        # тут можно переключать параметры argon2/политику TTL
+        # например: Normal = 5 минут, Paranoid = 60 сек
+        self._notify("Профиль безопасности изменён")
+
+    def manual_env_check(self) -> None:
+        issues = run_environment_checks()
+        if not issues:
+            self._show_dialog("Проверка среды", "Проблем не обнаружено.")
+            return
+        text = "\n".join(f"{issue.severity.upper()}: {issue.message}" for issue in issues)
+        self._show_dialog("Проверка среды", text)
+
+    def reset_session(self) -> None:
+        session_manager.invalidate("Сброшено пользователем")
+        self._notify("Сессия сброшена")
+
 
 class ZilantPrimeApp(MDApp):
-    watchdog: Optional[EnvironmentWatchdog] = None
+    watchdog: EnvironmentWatchdog | None = None
 
     def build(self):
         self.title = "Zilant Prime Mobile"
+        self.theme_cls.primary_palette = "BlueGray"
 
-        # На десктопе фиксируем окно, на Android не трогаем размер.
-        if platform != "android":
-            Window.size = (420, 760)
-
+        Window.size = (420, 760)
         apply_secure_window(Window)
         enforce_pause_lock(self)
         self._register_recipes()
 
+        Builder.load_string(KV)
+        sm = ScreenManager(transition=NoTransition())
+        lock_screen = LockScreen()
+        main_screen = MainScreen()
+        sm.add_widget(lock_screen)
+        sm.add_widget(main_screen)
+
+        # стартовая проверка среды
         issues = run_environment_checks()
-        sm: ScreenManager = Builder.load_string(KV)
-
-        lock_screen: LockScreen = sm.get_screen("lock")
-        main_screen: MainScreen = sm.get_screen("main")
-
         if issues:
             record_event(
                 "security.environment",
-                details={
-                    "issues": [
-                        {"severity": getattr(issue, "severity", "?"), "message": issue.message}
-                        for issue in issues
-                    ]
-                },
+                details={"issues": [{"severity": i.severity, "message": i.message} for i in issues]},
             )
             lock_screen.report_issues(issues)
-            if any(getattr(issue, "severity", "") == "critical" for issue in issues):
+            if any(issue.severity == "critical" for issue in issues):
                 session_manager.invalidate("Обнаружены угрозы среды при запуске")
 
-        def _lockdown_handler(found_issues: List[SecurityIssue]) -> None:
+        def _lockdown_handler(found_issues: list[SecurityIssue]) -> None:
             session_manager.invalidate("Watchdog заблокировал сессию")
             main_screen.controller.cancel()
             main_screen.busy = False
@@ -680,9 +628,7 @@ if __name__ == "__main__":
     try:
         from android.permissions import Permission, request_permissions
 
-        request_permissions(
-            [Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE]
-        )
+        request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
     except Exception:
         pass
 
