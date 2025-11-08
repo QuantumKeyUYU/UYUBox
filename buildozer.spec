@@ -6,7 +6,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,ttf,otf,txt,md,json
 version = 0.1.0
 
-requirements = python3,kivy==2.2.1,kivymd==1.2.0,argon2_cffi==21.3.0,openssl,cffi,cryptography==3.4.7,git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
+requirements = python3,kivy==2.2.1,kivymd==1.2.0,argon2_cffi==21.3.0,openssl,cffi,"cryptography<3.4",git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6  # <3.4: p4a bootstrap без Rust
 bootstrap = sdl2
 
 # важный фикс: только android.archs

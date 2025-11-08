@@ -35,7 +35,7 @@ android_zilant_app/
 kivy>=2.2.0
 kivymd>=1.2.0
 argon2-cffi>=23.1.0
-cryptography>=42.0.0
+cryptography>=2.8,<3.4
 zilant-prime-core>=0.7.0
 ``` 
 
