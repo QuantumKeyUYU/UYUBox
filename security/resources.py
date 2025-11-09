@@ -29,7 +29,10 @@ def _resolve_directory(path: str) -> str:
 
 
 def _capacity_for(path: str) -> DiskCapacity:
-    usage = shutil.disk_usage(path)
+    try:
+        usage = shutil.disk_usage(path)
+    except FileNotFoundError as exc:
+        raise ResourceError(f"Каталог {path!r} не найден.") from exc
     return DiskCapacity(total=usage.total, used=usage.used, free=usage.free)
 
 

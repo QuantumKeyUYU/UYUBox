@@ -72,27 +72,34 @@ class EnvironmentWatchdog:
                 self._last_fingerprint = fingerprint
                 self._notify(issues)
         else:
-            self._last_fingerprint = None
+            if self._last_fingerprint is not None:
+                self._last_fingerprint = None
+                self._notify([])
         if schedule:
             self._schedule_next()
 
     def _notify(self, issues: list[SecurityIssue]) -> None:
         def _dispatch() -> None:
-            record_event(
-                "security.watchdog.issue",
-                details={
-                    "issues": [
-                        {"severity": issue.severity, "message": issue.message}
-                        for issue in issues
-                    ]
-                },
-            )
-            if self.issue_handler:
-                self.issue_handler(issues)
-            if any(issue.severity == "critical" for issue in issues):
-                record_event("security.watchdog.lockdown", details={"count": len(issues)})
-                if self.lockdown_handler:
-                    self.lockdown_handler(issues)
+            if issues:
+                record_event(
+                    "security.watchdog.issue",
+                    details={
+                        "issues": [
+                            {"severity": issue.severity, "message": issue.message}
+                            for issue in issues
+                        ]
+                    },
+                )
+                if self.issue_handler:
+                    self.issue_handler(issues)
+                if any(issue.severity == "critical" for issue in issues):
+                    record_event("security.watchdog.lockdown", details={"count": len(issues)})
+                    if self.lockdown_handler:
+                        self.lockdown_handler(issues)
+            else:
+                record_event("security.watchdog.clear", details={})
+                if self.issue_handler:
+                    self.issue_handler([])
 
         self.scheduler(_dispatch)
 
