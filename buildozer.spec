@@ -11,6 +11,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,otf,txt,md,json
 version = 0.1.0
 
 # ВАЖНО: cryptography закреплена <3.4, иначе потянет Rust на Android
+# Argon2 берём с PyPI, т.к. тег 23.1.0 отсутствует в репозитории GitHub
 requirements = python3,kivy==2.3.0,kivymd==1.2.0,cffi==1.16.0,argon2-cffi==23.1.0,cryptography<3.4,androidstorage4kivy
 
 # Bootstrap
