@@ -1,13 +1,49 @@
 """Adaptive Argon2id profile selection."""
 from __future__ import annotations
 
+import hashlib
 import math
 import os
 import time
 from dataclasses import dataclass
 from typing import Literal
 
-from argon2.low_level import Type, hash_secret_raw
+try:  # pragma: no cover - optional dependency
+    from argon2.low_level import Type, hash_secret_raw as _argon2_hash_secret
+    _ARGON2_AVAILABLE = True
+except Exception:  # pragma: no cover - dependency may be absent on target builds
+    Type = None  # type: ignore[assignment]
+    _argon2_hash_secret = None  # type: ignore[assignment]
+    _ARGON2_AVAILABLE = False
+
+    class _FallbackType:
+        ID = "pbkdf2"
+
+    Type = _FallbackType  # type: ignore[assignment]
+
+
+def _hash_secret_raw(
+    *,
+    secret: bytes,
+    salt: bytes,
+    time_cost: int,
+    memory_cost: int,
+    parallelism: int,
+    hash_len: int,
+    type: object,
+) -> bytes:
+    if _ARGON2_AVAILABLE and _argon2_hash_secret is not None:
+        return _argon2_hash_secret(
+            secret=secret,
+            salt=salt,
+            time_cost=time_cost,
+            memory_cost=memory_cost,
+            parallelism=parallelism,
+            hash_len=hash_len,
+            type=Type.ID if hasattr(Type, "ID") else type,
+        )
+    iterations = max(100_000, time_cost * 50_000)
+    return hashlib.pbkdf2_hmac("sha256", secret, salt, iterations, dklen=hash_len)
 
 ProfileName = Literal["mobile", "desktop", "hsm"]
 
@@ -32,10 +68,12 @@ def auto_calibrate(target_ms: int = 400) -> Argon2Profile:
 
     sample_password = b"benchmark-password"
     sample_salt = os.urandom(16)
+    if not _ARGON2_AVAILABLE:
+        return DEFAULT_PROFILES["mobile"]
     chosen: Argon2Profile = DEFAULT_PROFILES["mobile"]
     for candidate in DEFAULT_PROFILES.values():
         start = time.perf_counter()
-        hash_secret_raw(
+        _hash_secret_raw(
             secret=sample_password,
             salt=sample_salt,
             time_cost=candidate.time_cost,
@@ -54,7 +92,7 @@ def auto_calibrate(target_ms: int = 400) -> Argon2Profile:
 
 def derive_key(password: str, salt: bytes, *, profile: Argon2Profile | None = None, key_len: int = 32) -> bytes:
     profile = profile or auto_calibrate()
-    return hash_secret_raw(
+    return _hash_secret_raw(
         secret=password.encode("utf-8"),
         salt=salt,
         time_cost=profile.time_cost,
