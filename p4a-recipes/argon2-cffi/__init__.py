@@ -1,10 +1,9 @@
 """Custom python-for-android recipe for argon2-cffi 21.3.0.
 
 The upstream python-for-android recipe fetches the sources via git and
-attempts to checkout a tag named ``21.3.0``.  GitHub only provides this
+attempts to checkout a tag named ``21.3.0``. GitHub only provides this
 release as an sdist tarball, so the checkout step fails during CI builds
-(
-``ErrorReturnCode_1: /usr/bin/git checkout 21.3.0``).  This recipe mirrors
+(ErrorReturnCode_1: /usr/bin/git checkout 21.3.0). This recipe mirrors
 the stock behaviour but pulls the source archive from PyPI instead of git,
 which allows Buildozer to resolve the dependency reliably.
 """
@@ -16,14 +15,12 @@ from pythonforandroid.recipe import PythonRecipe
 
 
 def _flatten_sdist(build_dir: str, version: str) -> None:
-    """Ensure ``build_dir`` contains the unpacked sources directly.
+    """Ensure build_dir contains the unpacked sources directly.
 
     The argon2-cffi sdist expands into a versioned subdirectory
-    (``argon2-cffi-21.3.0``).  python-for-android expects ``setup.py`` to live
-    at the root of ``build_dir`` though, so we move the extracted files up one
-    level when necessary.
+    (e.g. "argon2-cffi-21.3.0"). p4a expects setup.py at the root of build_dir,
+    so we move the extracted files up one level when necessary.
     """
-
     setup_py = os.path.join(build_dir, "setup.py")
     if os.path.exists(setup_py):
         return
@@ -47,7 +44,6 @@ def _flatten_sdist(build_dir: str, version: str) -> None:
     shutil.rmtree(extracted_dir)
 
 
-
 class Argon2CFFIRecipe(PythonRecipe):
     """Build argon2-cffi 21.3.0 from the PyPI sdist."""
 
@@ -66,6 +62,7 @@ class Argon2CFFIRecipe(PythonRecipe):
         _flatten_sdist(self.get_build_dir(arch.arch), self.version)
 
     def build_arch(self, arch):
+        # Re-check to be safe in case extraction happened at this stage.
         _flatten_sdist(self.get_build_dir(arch.arch), self.version)
         super().build_arch(arch)
 
