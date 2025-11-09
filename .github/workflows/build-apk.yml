@@ -61,9 +61,15 @@ jobs:
 
       - name: Clean buildozer caches
         run: |
-          buildozer android clean
+          echo "Cleaning Buildozer cache (safe mode)"
+          mkdir -p .buildozer
           rm -rf .buildozer/android/platform/build-*
           rm -rf .buildozer/android/packages
+          rm -rf .buildozer/.gradle
+
+      - name: Update python-for-android platform
+        run: |
+          buildozer android update
 
       - name: Build debug APK
         env:
