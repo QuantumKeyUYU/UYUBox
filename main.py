@@ -1,6 +1,54 @@
 from __future__ import annotations
 
 import os
+import sys
+import traceback
+
+from kivy.logger import Logger
+
+
+def _excepthook(exctype, value, tb):
+    msg = "".join(traceback.format_exception(exctype, value, tb))
+    try:
+        from kivy.app import App
+
+        app = App.get_running_app()
+        user_dir = app.user_data_dir if app else "."
+        path = os.path.join(user_dir, "crash.txt")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(msg)
+    except Exception:
+        pass
+    Logger.critical("APP", "Unhandled exception:\n%s", msg)
+
+
+sys.excepthook = _excepthook
+
+
+def request_runtime_perms():
+    try:
+        from android.permissions import Permission, request_permissions
+        from jnius import autoclass
+
+        Build = autoclass("android.os.Build")
+        sdk = int(Build.VERSION.SDK_INT)
+        if sdk >= 33:
+            perms = [
+                Permission.READ_MEDIA_AUDIO,
+                Permission.READ_MEDIA_IMAGES,
+                Permission.READ_MEDIA_VIDEO,
+            ]
+        else:
+            perms = [
+                Permission.READ_EXTERNAL_STORAGE,
+                Permission.WRITE_EXTERNAL_STORAGE,
+            ]
+        request_permissions(perms)
+        Logger.info("APP: runtime permission request executed successfully")
+    except Exception as e:  # pragma: no cover - Android specific
+        Logger.warning(f"APP: permission request skipped: {e}")
+
+
 import tempfile
 import time
 
@@ -26,9 +74,9 @@ from integrity.validator import IntegrityError, verify_container
 from security.android_security import apply_secure_window, enforce_pause_lock
 from security.biometric import authenticate
 from security.controller import SecureFileController
+from security.runtime_checks import SecurityIssue, run_environment_checks
 from security.session import SessionError, session_manager
 from security.validation import collect_issues, validate_file_path, validate_password
-from security.runtime_checks import SecurityIssue, run_environment_checks
 from security.watchdog import EnvironmentWatchdog
 from ui.wizard import WizardController, WizardStep
 from workflow.recipes import Recipe, Step, registry
@@ -745,6 +793,13 @@ class ZilantPrimeApp(MDApp):
         self.watchdog.start()
         return sm
 
+    def on_start(self) -> None:
+        super().on_start()
+        from kivy.logger import Logger
+
+        Logger.info("APP: on_start() called — application launch sequence initiated")
+        request_runtime_perms()
+
     def _register_recipes(self) -> None:
         registry.register(
             Recipe(
@@ -769,13 +824,4 @@ class ZilantPrimeApp(MDApp):
 
 
 if __name__ == "__main__":
-    try:
-        from android.permissions import Permission, request_permissions
-
-        request_permissions(
-            [Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE]
-        )
-    except Exception:
-        pass
-
     ZilantPrimeApp().run()
