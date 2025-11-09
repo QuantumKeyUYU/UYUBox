@@ -54,9 +54,12 @@ def test_watchdog_triggers_lockdown(tmp_path):
     watchdog.run_once()
     assert len(dispatched) == 1
 
-    # Clearing issues resets the fingerprint allowing future notifications.
+    # Clearing issues notifies handlers and resets the fingerprint.
     issues.clear()
     watchdog.run_once()
+    assert dispatched[-1] == []
+
     issues.append(SecurityIssue(severity="critical", message="root"))
     watchdog.run_once()
-    assert len(dispatched) == 2
+    assert len(dispatched) == 3
+    assert dispatched[-1][0].message == "root"
