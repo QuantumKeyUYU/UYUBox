@@ -76,7 +76,12 @@ from security.biometric import authenticate
 from security.controller import SecureFileController
 from security.runtime_checks import SecurityIssue, run_environment_checks
 from security.session import SessionError, session_manager
-from security.validation import collect_issues, validate_file_path, validate_password
+from security.validation import (
+    collect_issues,
+    validate_file_path,
+    validate_output_path,
+    validate_password,
+)
 from security.watchdog import EnvironmentWatchdog
 from ui.wizard import WizardController, WizardStep
 from workflow.recipes import Recipe, Step, registry
@@ -467,17 +472,26 @@ class MainScreen(Screen):
             raise ValueError(text)
         return password
 
-    def _validate_common_file(self) -> tuple[str, str, str | None, str]:
+    def _validate_common_file(
+        self,
+        *,
+        for_unpack: bool = False,
+    ) -> tuple[str, str, str | None, str]:
         file_path = self.ids.file_path.text.strip()
         output_path = self.ids.output_path.text.strip()
         if not output_path and file_path:
-            output_path = file_path + ".zilant"
+            if for_unpack and file_path.lower().endswith(".zilant"):
+                output_path = file_path[: -len(".zilant")]
+            else:
+                output_path = file_path + ".zilant"
+            self.ids.output_path.text = output_path
 
         password = self._require_session_and_password()
         decoy_message = self.ids.decoy.text or None
 
         issues = collect_issues(
             validate_file_path(file_path, must_exist=True),
+            validate_output_path(output_path, source_path=file_path),
         )
         if issues:
             text = "\n".join(f"{issue.field}: {issue.message}" for issue in issues)
@@ -557,7 +571,7 @@ class MainScreen(Screen):
         if self.busy:
             return
         try:
-            file_path, output_path, _decoy, password = self._validate_common_file()
+            file_path, output_path, _decoy, password = self._validate_common_file(for_unpack=True)
         except ValueError:
             return
 
