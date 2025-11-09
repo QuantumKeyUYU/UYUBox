@@ -11,7 +11,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,otf,txt,md,json
 version = 0.1.0
 
 # ВАЖНО: cryptography закреплена <3.4, иначе потянет Rust на Android
-requirements = python3,kivy==2.2.1,kivymd==1.2.0,argon2_cffi==21.3.0,openssl,cffi,cryptography<3.4,git+https://github.com/QuantumKeyUYU/zilant-prime-core.git@v0.1.6
+requirements = python3,kivy==2.3.0,kivymd==1.2.0,cffi==1.16.0,argon2-cffi==23.1.0,cryptography<3.4,androidstorage4kivy
 
 # Bootstrap
 bootstrap = sdl2
@@ -24,11 +24,11 @@ fullscreen = 1
 android.archs = arm64-v8a,armeabi-v7a
 
 # Целевая и минимальная версии Android SDK
-android.api = 33
-android.minapi = 24
+android.api = 31
+android.minapi = 21
 
-# Согласованный NDK API для python-for-android
-p4a.ndk_api = 24
+# Версия NDK
+android.ndk = 25b
 
 # Локальные рецепты p4a с фиксами зависимостей
 p4a.local_recipes = ./p4a-recipes
@@ -36,6 +36,9 @@ p4a.local_recipes = ./p4a-recipes
 # Включаем AndroidX и авто-принятие лицензий
 android.enable_androidx = True
 android.accept_sdk_license = True
+android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,READ_MEDIA_AUDIO,READ_MEDIA_IMAGES,READ_MEDIA_VIDEO
+android.logcat_filters = *:S python:D libc:D ActivityManager:I AndroidRuntime:E
+android.python_debuggable = 1
 
 
 [buildozer]
