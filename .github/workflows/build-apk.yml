@@ -59,6 +59,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildozer-
 
+      - name: Clean buildozer caches
+        run: |
+          buildozer android clean
+          rm -rf .buildozer/android/platform/build-*
+          rm -rf .buildozer/android/packages
+
       - name: Build debug APK
         env:
           P4A_ndk_api: "24"
