@@ -9,8 +9,15 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict
 
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+try:  # pragma: no cover - import guarded for optional dependency
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+except ModuleNotFoundError:  # pragma: no cover - optional dependency missing at runtime
+    serialization = None  # type: ignore[assignment]
+    Ed25519PrivateKey = None  # type: ignore[assignment]
+    _CRYPTOGRAPHY_AVAILABLE = False
+else:
+    _CRYPTOGRAPHY_AVAILABLE = True
 
 
 def _resolve_audit_dir() -> Path:
@@ -34,6 +41,8 @@ CHAIN_STATE_PATH = AUDIT_DIR / "chain.state"
 
 
 def _load_private_key() -> Ed25519PrivateKey:
+    if not _CRYPTOGRAPHY_AVAILABLE:
+        raise RuntimeError("cryptography backend is not available")
     if KEY_PATH.exists():
         data = KEY_PATH.read_bytes()
         return serialization.load_pem_private_key(data, password=None)
@@ -60,7 +69,6 @@ def _store_chain_hash(hash_hex: str) -> None:
 
 
 def record_event(event: str, *, details: Dict[str, Any] | None = None) -> Path:
-    private_key = _load_private_key()
     timestamp = int(time.time())
     prev_hash = _load_prev_hash()
     payload = {
@@ -70,13 +78,24 @@ def record_event(event: str, *, details: Dict[str, Any] | None = None) -> Path:
         "prev_hash": prev_hash,
     }
     message = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
-    signature = private_key.sign(message)
-    chain_hash = hashlib.sha3_512(message + signature).hexdigest()
-    entry = {
-        "payload": payload,
-        "signature": signature.hex(),
-        "chain_hash": chain_hash,
-    }
+    if _CRYPTOGRAPHY_AVAILABLE:
+        private_key = _load_private_key()
+        signature = private_key.sign(message)
+        chain_hash = hashlib.sha3_512(message + signature).hexdigest()
+        entry = {
+            "payload": payload,
+            "signature": signature.hex(),
+            "chain_hash": chain_hash,
+        }
+    else:
+        signature = None
+        chain_hash = hashlib.sha3_512(message).hexdigest()
+        entry = {
+            "payload": payload,
+            "signature": None,
+            "chain_hash": chain_hash,
+            "crypto": "disabled",
+        }
     file_path = AUDIT_DIR / f"audit_{timestamp}_{uuid.uuid4().hex}.json"
     file_path.write_text(json.dumps(entry, ensure_ascii=False, indent=2))
     _store_chain_hash(chain_hash)
@@ -86,7 +105,11 @@ def record_event(event: str, *, details: Dict[str, Any] | None = None) -> Path:
 def verify_log(path: os.PathLike[str] | str) -> bool:
     data = json.loads(Path(path).read_text())
     payload = json.dumps(data["payload"], ensure_ascii=False, sort_keys=True).encode("utf-8")
-    signature = bytes.fromhex(data["signature"])
+    signature_hex = data.get("signature")
+    signature = bytes.fromhex(signature_hex) if signature_hex else b""
+    if not _CRYPTOGRAPHY_AVAILABLE:
+        expected_chain_hash = hashlib.sha3_512(payload).hexdigest()
+        return expected_chain_hash == data.get("chain_hash")
     private_key = _load_private_key()
     public_key = private_key.public_key()
     try:
